@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+
+  
+  <title>全排列、dp、zip()用法 | ROTON&#39;s BLOGGGG</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="通配符匹配 思路：  创建一个 (len(p)+1)*(len(s)+1) 大小的数组lst，除了lst[0][0]外，其他的都为False lst是显示状态的数组，lst[i][j]标识当前p[:i]能匹配s[:j] 正式开始填充数组，首先数组初始化，用于填充第一行lst[0]。若当前p[i]==’‘ 且 lst[0][i-1]==True 的情况，lst[0][i]=True。 这个是覆盖``">
+<meta name="keywords" content="LeetCode,Python">
+<meta property="og:type" content="article">
+<meta property="og:title" content="全排列、dp、zip()用法">
+<meta property="og:url" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2019&#x2F;11&#x2F;17&#x2F;LeetCode1-md&#x2F;index.html">
+<meta property="og:site_name" content="ROTON&#39;s BLOGGGG">
+<meta property="og:description" content="通配符匹配 思路：  创建一个 (len(p)+1)*(len(s)+1) 大小的数组lst，除了lst[0][0]外，其他的都为False lst是显示状态的数组，lst[i][j]标识当前p[:i]能匹配s[:j] 正式开始填充数组，首先数组初始化，用于填充第一行lst[0]。若当前p[i]==’‘ 且 lst[0][i-1]==True 的情况，lst[0][i]=True。 这个是覆盖``">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2019&#x2F;11&#x2F;source&#x2F;pic&#x2F;44.png">
+<meta property="og:image" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2019&#x2F;11&#x2F;source&#x2F;pic&#x2F;%E6%9C%80%E5%A4%A7%E4%B8%89%E6%95%B4%E9%99%A4.png">
+<meta property="og:updated_time" content="2019-11-18T10:30:29.805Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2019&#x2F;11&#x2F;source&#x2F;pic&#x2F;44.png">
+  
+    <link rel="alternate" href="/atom.xml" title="ROTON&#39;s BLOGGGG" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">ROTON&#39;s BLOGGGG</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="搜索"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-LeetCode1-md" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2019/11/17/LeetCode1-md/" class="article-date">
+  <time datetime="2019-11-17T14:28:46.000Z" itemprop="datePublished">2019-11-17</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/%E9%A2%98%E8%A7%A3/">题解</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      全排列、dp、zip()用法
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="通配符匹配"><a href="#通配符匹配" class="headerlink" title="通配符匹配"></a>通配符匹配</h3><p><img src="../../source/pic/44.png" alt="pic"></p>
+<p>思路：</p>
+<ul>
+<li>创建一个 (len(p)+1)*(len(s)+1) 大小的数组lst，除了lst[0][0]外，其他的都为<code>False</code></li>
+<li>lst是显示状态的数组，lst[i][j]标识当前p[:i]能匹配s[:j]</li>
+<li>正式开始填充数组，首先数组初始化，用于填充第一行lst[0]。若当前p[i]==’<em>‘ 且 lst[0][i-1]==True 的情况，lst[0][i]=True。 这个是覆盖`</em>`替代多个s中字符串的情况；</li>
+<li>开始比对s与p：如果p当前字符不是* ，lst[i][j]=lst[i-1][j-1]</li>
+<li>否则的话，lst[i][j]=lst[i-1][j](<code>*</code>覆盖了多个s字符的情况) or lst[i][j-1](<code>*</code>等于空串的情况)</li>
+</ul>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">Solution</span><span class="params">(self, s: str, p: str)</span> -&gt; bool:</span></span><br><span class="line">    lenp,lens=len(p),len(s)</span><br><span class="line">    lst=[[<span class="literal">False</span>] * lenp <span class="keyword">for</span> _ <span class="keyword">in</span> range(lens)]</span><br><span class="line">    lst[<span class="number">0</span>][<span class="number">0</span>]=<span class="literal">True</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">1</span>,lenp+<span class="number">1</span>):</span><br><span class="line">        lst[<span class="number">0</span>][i]=lst[<span class="number">0</span>][i<span class="number">-1</span>] <span class="keyword">and</span> p[i<span class="number">-1</span>]==<span class="string">'*'</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">1</span>,lens+<span class="number">1</span>):</span><br><span class="line">        <span class="keyword">for</span> j <span class="keyword">in</span> range(<span class="number">1</span>,lenp+<span class="number">1</span>):</span><br><span class="line">            <span class="keyword">if</span> p[j<span class="number">-1</span>]==<span class="string">'*'</span>:</span><br><span class="line">                lst[i][j]= lst[i<span class="number">-1</span>][j] <span class="keyword">or</span> lst[i][j<span class="number">-1</span>]</span><br><span class="line">            <span class="keyword">else</span>:</span><br><span class="line">                lst[i][j]=lst[i<span class="number">-1</span>][j<span class="number">-1</span>]</span><br><span class="line">    <span class="keyword">return</span> lst[<span class="number">-1</span>][<span class="number">-1</span>]</span><br></pre></td></tr></table></figure>
+
+<h3 id="可被3整除"><a href="#可被3整除" class="headerlink" title="可被3整除"></a>可被3整除</h3><p><img src="../../source/pic/%E6%9C%80%E5%A4%A7%E4%B8%89%E6%95%B4%E9%99%A4.png" alt="pic"></p>
+<p><strong>思路</strong></p>
+<ul>
+<li>一个数字，要么被3整除，要么余1或余2，只有这三种情况</li>
+<li>一开始的想法是：余1+余2 || 余2x3 || 余1x3 ，这三种组合能够变成一个被三整除的数，结果发现如果按这个思路求结果还需要用dp算最优解，不划算；</li>
+<li>看了别人的题解受到启发，整个nums相加后%3，若余1则减去数组中最小的余1数，余2减去最小的余2数，然后再返回</li>
+</ul>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">solution</span><span class="params">(nums)</span>:</span></span><br><span class="line">    res=sum(nums)</span><br><span class="line">    dic=defualtdict(list)</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> nums:</span><br><span class="line">        dic[i%<span class="number">3</span>].append(<span class="number">3</span>)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> res%<span class="number">3</span>==<span class="number">1</span>:</span><br><span class="line">        dic[<span class="number">1</span>]=sorted(dic[<span class="number">1</span>])</span><br><span class="line">        <span class="keyword">return</span> res-dic[<span class="number">1</span>][<span class="number">0</span>]</span><br><span class="line">    <span class="keyword">elif</span> res%<span class="number">3</span>==<span class="number">2</span>:</span><br><span class="line">        dic[<span class="number">2</span>]=sorted(dic[<span class="number">2</span>])</span><br><span class="line">        <span class="keyword">return</span> res-dic[<span class="number">2</span>][<span class="number">0</span>]</span><br><span class="line">    <span class="keyword">return</span> res</span><br></pre></td></tr></table></figure>
+<h3 id="受污染的二叉树"><a href="#受污染的二叉树" class="headerlink" title="受污染的二叉树"></a>受污染的二叉树</h3><h3 id="接雨水"><a href="#接雨水" class="headerlink" title="接雨水"></a>接雨水</h3><h3 id="螺旋矩阵"><a href="#螺旋矩阵" class="headerlink" title="螺旋矩阵"></a>螺旋矩阵</h3>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2019/11/17/LeetCode1-md/" data-id="ck3n55hcf0001qwwf5pvydgen" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/LeetCode/" rel="tag">LeetCode</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Python/" rel="tag">Python</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2019/12/01/ddd-md/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          分贝检测程序，超过75dB马上警报
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2019/11/14/Leetcode-md/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">LeetCode： 链表K组翻转 | Collection函数</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">分类</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/%E9%A2%98%E8%A7%A3/">题解</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">标签</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/LeetCode/" rel="tag">LeetCode</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Python/" rel="tag">Python</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%B5%8B%E8%AF%95/" rel="tag">测试</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">标签云</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/LeetCode/" style="font-size: 15px;">LeetCode</a> <a href="/tags/Python/" style="font-size: 20px;">Python</a> <a href="/tags/%E6%B5%8B%E8%AF%95/" style="font-size: 10px;">测试</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">归档</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">十二月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">十一月 2019</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">最新文章</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2019/12/01/ddd-md/">分贝检测程序，超过75dB马上警报</a>
+          </li>
+        
+          <li>
+            <a href="/2019/11/17/LeetCode1-md/">全排列、dp、zip()用法</a>
+          </li>
+        
+          <li>
+            <a href="/2019/11/14/Leetcode-md/">LeetCode： 链表K组翻转 | Collection函数</a>
+          </li>
+        
+          <li>
+            <a href="/2019/11/03/selenium-md/">selenium学习笔记</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2019 ROTON<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+
+
+  </div>
+</body>
+</html>
