@@ -7,15 +7,15 @@
   
   <title>selenium学习笔记 | ROTON&#39;s BLOGGGG</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="出于了解Web自动化测试的意图学习了selenium。selenium不完全是个python库，除了python，图像化界面、Java代码也可以操控它。 通过selenium编写代码可以实现人类操作web的行为。 1234from selenium import webdriverdriver = webdriver.Chrome(&amp;apos;chromedriver_path&amp;apos;)driver.get(">
+  <meta name="description" content="出于了解Web自动化测试的意图学习了selenium。">
 <meta name="keywords" content="Python,测试">
 <meta property="og:type" content="article">
 <meta property="og:title" content="selenium学习笔记">
 <meta property="og:url" content="http:&#x2F;&#x2F;rotonnn.github.io&#x2F;2019&#x2F;11&#x2F;03&#x2F;selenium-md&#x2F;index.html">
 <meta property="og:site_name" content="ROTON&#39;s BLOGGGG">
-<meta property="og:description" content="出于了解Web自动化测试的意图学习了selenium。selenium不完全是个python库，除了python，图像化界面、Java代码也可以操控它。 通过selenium编写代码可以实现人类操作web的行为。 1234from selenium import webdriverdriver = webdriver.Chrome(&amp;apos;chromedriver_path&amp;apos;)driver.get(">
+<meta property="og:description" content="出于了解Web自动化测试的意图学习了selenium。">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2020-01-19T04:13:18.621Z">
+<meta property="og:updated_time" content="2020-01-19T04:39:46.883Z">
 <meta name="twitter:card" content="summary">
   
     <link rel="alternate" href="/atom.xml" title="ROTON&#39;s BLOGGGG" type="application/atom+xml">
@@ -85,9 +85,9 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <a id="more"></a>
-
-<p>出于了解Web自动化测试的意图学习了selenium。<br>selenium不完全是个python库，除了python，图像化界面、Java代码也可以操控它。</p>
+        <p>出于了解Web自动化测试的意图学习了selenium。</p>
+<a id="more"></a> 
+<p>selenium不完全是个python库，除了python，图像化界面、Java代码也可以操控它。</p>
 <p>通过selenium编写代码可以实现人类操作web的行为。</p>
 <figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> selenium <span class="keyword">import</span> webdriver</span><br><span class="line"></span><br><span class="line">driver = webdriver.Chrome(<span class="string">'chromedriver_path'</span>)</span><br><span class="line">driver.get(<span class="string">"https://www.google.com"</span>)</span><br></pre></td></tr></table></figure>
 <p>上面的代码将操纵chrome浏览器的webdriver，自动打开Chrome浏览器，连接google主页。selenium的webdriver库只提供API，实际的操作还是要通过浏览器的驱动实现。chrome的驱动器叫ChromeDriver，直接搜索就能下载。不过要注意不同版本的ChromeDriver适配不同的Chrome版本，如果版本不匹配在实际操作中会出现闪退的情况。</p>
