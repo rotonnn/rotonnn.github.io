@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+
+  
+  <title>LeetCode： 链表K组翻转 | Collection函数 | ROTON&#39;s BLOGGGG</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="K个一组翻转链表 给你一个链表，每 k 个节点一组进行翻转，请你返回翻转后的链表。k 是一个正整数，它的值小于或等于链表的长度。如果节点总数不是 k 的整数倍，那么请将最后剩余的节点保持原有顺序。示例 :给定这个链表：1-&amp;gt;2-&amp;gt;3-&amp;gt;4-&amp;gt;5当 k = 2 时，应当返回: 2-&amp;gt;1-&amp;gt;4-&amp;gt;3-&amp;gt;5当 k = 3 时，应当返回: 3-&amp;gt;2-">
+<meta name="keywords" content="LeetCode">
+<meta property="og:type" content="article">
+<meta property="og:title" content="LeetCode： 链表K组翻转 | Collection函数">
+<meta property="og:url" content="http:&#x2F;&#x2F;rotonnn.github.io&#x2F;2019&#x2F;11&#x2F;14&#x2F;Leetcode-md&#x2F;index.html">
+<meta property="og:site_name" content="ROTON&#39;s BLOGGGG">
+<meta property="og:description" content="K个一组翻转链表 给你一个链表，每 k 个节点一组进行翻转，请你返回翻转后的链表。k 是一个正整数，它的值小于或等于链表的长度。如果节点总数不是 k 的整数倍，那么请将最后剩余的节点保持原有顺序。示例 :给定这个链表：1-&amp;gt;2-&amp;gt;3-&amp;gt;4-&amp;gt;5当 k = 2 时，应当返回: 2-&amp;gt;1-&amp;gt;4-&amp;gt;3-&amp;gt;5当 k = 3 时，应当返回: 3-&amp;gt;2-">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2020-01-19T04:13:04.260Z">
+<meta name="twitter:card" content="summary">
+  
+    <link rel="alternate" href="/atom.xml" title="ROTON&#39;s BLOGGGG" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">ROTON&#39;s BLOGGGG</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="搜索"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://rotonnn.github.io"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-Leetcode-md" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2019/11/14/Leetcode-md/" class="article-date">
+  <time datetime="2019-11-14T09:21:03.000Z" itemprop="datePublished">2019-11-14</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/%E9%A2%98%E8%A7%A3/">题解</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      LeetCode： 链表K组翻转 | Collection函数
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <a id="more"></a>
+<h3 id="K个一组翻转链表"><a href="#K个一组翻转链表" class="headerlink" title="K个一组翻转链表"></a>K个一组翻转链表</h3><blockquote>
+<p>给你一个链表，每 k 个节点一组进行翻转，请你返回翻转后的链表。<br>k 是一个正整数，它的值小于或等于链表的长度。<br>如果节点总数不是 k 的整数倍，那么请将最后剩余的节点保持原有顺序。<br>示例 :<br>给定这个链表：1-&gt;2-&gt;3-&gt;4-&gt;5<br>当 k = 2 时，应当返回: 2-&gt;1-&gt;4-&gt;3-&gt;5<br>当 k = 3 时，应当返回: 3-&gt;2-&gt;1-&gt;4-&gt;5<br>说明 :<br>你的算法只能使用常数的额外空间。<br>你不能只是单纯的改变节点内部的值，而是需要实际的进行节点交换。</p>
+</blockquote>
+<p>思路：</p>
+<ul>
+<li>采用递归的方法。按K个节点一组向后推进，直到剩下的节点少于K；</li>
+<li>从链表后端往前，把每组节点传入reverse进行翻转；</li>
+<li>reverse将第一个节点指向末尾 tail，然后第二个节点指向第一个节点，第三个节点指向第二个节点…此时得到该组反转后的链表。reverse返回反转后链表的链表头；</li>
+<li>该链表头回到reverseKGroup后，被作为下一次reverse的tail，这样一组接一组就可以连成一整个链表了。</li>
+</ul>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">reverse</span><span class="params">(self,head,q,tail)</span>:</span></span><br><span class="line">        <span class="keyword">if</span> head==q:<span class="comment">#防止K==1的情况</span></span><br><span class="line">            <span class="keyword">return</span> head</span><br><span class="line">        now,pre,nxt=head,head.next,tail<span class="comment">#这里将nxt设为tail，让当前组和之前的结果连接在一起</span></span><br><span class="line">        <span class="keyword">while</span> pre!=q:<span class="comment">#逆转链表</span></span><br><span class="line">            now.next=nxt</span><br><span class="line">            nxt=now</span><br><span class="line">            now=pre</span><br><span class="line">            pre=pre.next</span><br><span class="line">        pre.next=now</span><br><span class="line">        now.next=nxt</span><br><span class="line">        <span class="keyword">return</span> pre<span class="comment">#返回重置后链表的头（即初始链表的尾</span></span><br><span class="line">        </span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">reverseKGroup</span><span class="params">(self, head: ListNode, k: int)</span> -&gt; ListNode:</span></span><br><span class="line">        q,num,tail=head,k,<span class="literal">None</span></span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">not</span> head :</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">None</span></span><br><span class="line">        <span class="keyword">while</span> q.next!=<span class="literal">None</span> <span class="keyword">and</span> num&gt;<span class="number">1</span>:</span><br><span class="line">            q=q.next</span><br><span class="line">            num-=<span class="number">1</span></span><br><span class="line">        <span class="keyword">if</span> num==<span class="number">1</span> <span class="keyword">and</span> q.next:</span><br><span class="line">            tail=self.reverseKGroup(q.next,k)<span class="comment">#从后往前得到每组运算后的结果</span></span><br><span class="line">        <span class="keyword">elif</span> num!=<span class="number">1</span>:<span class="comment">#如果当前剩余节点小于K，不用逆转</span></span><br><span class="line">            <span class="keyword">return</span> head </span><br><span class="line">        pre=self.reverse(head,q,tail)<span class="comment">#这里tail被传入了</span></span><br><span class="line">        <span class="keyword">return</span> pre<span class="comment">#返回重置后链表的头</span></span><br></pre></td></tr></table></figure>
+<h3 id="串联所有单词的字符"><a href="#串联所有单词的字符" class="headerlink" title="串联所有单词的字符"></a>串联所有单词的字符</h3><blockquote>
+<p>给定一个字符串 s 和一些长度相同的单词 words。找出 s 中恰好可以由 words 中所有单词串联形成的子串的起始位置。<br>注意子串要与 words 中的单词完全匹配，中间不能有其他字符，但不需要考虑 words 中单词串联的顺序。<br>示例 1：<br>输入：<br>  s = “barfoothefoobarman”,<br>  words = [“foo”,”bar”]<br>输出：[0,9]<br>解释：<br>从索引 0 和 9 开始的子串分别是 “barfoo” 和 “foobar” 。<br>输出的顺序不重要, [9,0] 也是有效答案。</p>
+<p>示例 2：<br>输入：<br>  s = “wordgoodgoodgoodbestword”,<br>  words = [“word”,”good”,”best”,”word”]<br>输出：[]</p>
+</blockquote>
+<p>思路：</p>
+<ul>
+<li>一开始我想的是对words全排列，然后在s上滑动窗口。提交之后超时了，确实还是复杂度太高了。看了其他的题解发现可以用colletions库中的Count快速实现。collections库我不太清楚，所以后面还会跟一个collection库的学习笔记。</li>
+<li>首先先从collection import Count，将words列表变成一个Count字典，此时words里只有” 单词 : 它在words中的个数” </li>
+<li>i=0 开始向后遍历，得到每组子串为 s[i:i+words的长度]</li>
+<li>由于words中每个单词的长度都一样，所以把当前子串按照单词长度拆开，变成Count字典，即可得到当前子串的” 单词:数量 “</li>
+<li>将子串和words的Count字典比较，如果两个一致则当前子串是个“串联所有单词的字符”。</li>
+</ul>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">findSubstring</span><span class="params">(self, s: str, words: List[str])</span> -&gt; List[int]:</span></span><br><span class="line">        <span class="keyword">from</span> collections <span class="keyword">import</span> Counter</span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">not</span> words <span class="keyword">or</span> <span class="keyword">not</span> s:</span><br><span class="line">            <span class="keyword">return</span> []</span><br><span class="line">        lens,lenw,lenws,res=len(s),len(words[<span class="number">0</span>]),len(words),[]</span><br><span class="line">        words=Counter(words)</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> range(lens-lenw*lenws+<span class="number">1</span>):</span><br><span class="line">            cur_s=s[i:i+lenw*lenws]</span><br><span class="line">            tep_s=[]</span><br><span class="line">            <span class="keyword">for</span> j <span class="keyword">in</span> range(<span class="number">0</span>,len(cur_s),lenw):</span><br><span class="line">                tep_s.append(cur_s[j:j+lenw])</span><br><span class="line">            <span class="keyword">if</span> words==Counter(tep_s):</span><br><span class="line">                res.append(i)</span><br><span class="line">        <span class="keyword">return</span> res</span><br></pre></td></tr></table></figure>
+
+<h3 id="Collection库"><a href="#Collection库" class="headerlink" title="Collection库"></a>Collection库</h3><h5 id="namedtuple"><a href="#namedtuple" class="headerlink" title="namedtuple()"></a>namedtuple()</h5><p>命名元组赋予每个位置一个含义，提供可读性和自文档性。它们可以用于任何普通元组，并添加了通过名字获取值的能力，通过索引值也是可以的。</p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">Point=nametuple(<span class="string">"Point"</span>,[<span class="string">'x'</span>,<span class="string">'y'</span>])</span><br><span class="line">p=Point(<span class="number">11</span>,y=<span class="number">12</span>)</span><br><span class="line"></span><br><span class="line">p[<span class="number">0</span>]+p[<span class="number">1</span>]</span><br><span class="line">&gt;&gt;&gt;<span class="number">23</span></span><br><span class="line">p.x+p.y</span><br><span class="line">&gt;&gt;&gt;<span class="number">23</span></span><br><span class="line">x,y</span><br><span class="line">&gt;&gt;&gt;<span class="number">11</span>,<span class="number">12</span></span><br><span class="line">p</span><br><span class="line">&gt;&gt;&gt;Point(x=<span class="number">11</span>,y=<span class="number">12</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">##### deque</span></span><br><span class="line">优化过的双向队列，两端的开销都是O(<span class="number">1</span>) 。</span><br><span class="line">常用的方法有：</span><br><span class="line">```py</span><br><span class="line">s=<span class="string">'ijk'</span></span><br><span class="line">dq=deque(s)</span><br><span class="line">dq.append(<span class="string">'x'</span>)<span class="comment">#在右边加入x</span></span><br><span class="line">dq.leftappend(<span class="string">'y'</span>)<span class="comment">#在左边加入y</span></span><br><span class="line">dq.pop()<span class="comment">#弹出右边</span></span><br><span class="line">dq.leftpop()<span class="comment">#弹出左边</span></span><br><span class="line"></span><br><span class="line">dq.extend(<span class="string">'shzuecs'</span>)<span class="comment">#右边加入这一堆东西</span></span><br><span class="line">dq.leftextend(<span class="string">'uuxhuf'</span>)<span class="comment">#左边加入这一堆</span></span><br><span class="line">dq.clear()<span class="comment">#消除全部</span></span><br><span class="line"></span><br><span class="line">dq.pop()<span class="comment">#报错，弹出IndexError</span></span><br></pre></td></tr></table></figure>
+
+<h5 id="ChainMap"><a href="#ChainMap" class="headerlink" title="ChainMap"></a>ChainMap</h5><figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">baseline = &#123;<span class="string">'music'</span>: <span class="string">'bach'</span>, <span class="string">'art'</span>: <span class="string">'rembrandt'</span>&#125;</span><br><span class="line">adjustments = &#123;<span class="string">'art'</span>: <span class="string">'van gogh'</span>, <span class="string">'opera'</span>: <span class="string">'carmen'</span>&#125;</span><br><span class="line"></span><br><span class="line">ChainMap(adjustments, baseline)</span><br><span class="line">&gt;&gt;&gt;ChainMap(&#123;<span class="string">'music'</span>: <span class="string">'bach'</span>, <span class="string">'art'</span>: <span class="string">'rembrandt'</span>&#125;, &#123;<span class="string">'art'</span>: <span class="string">'van gogh'</span>, <span class="string">'opera'</span>: <span class="string">'carmen'</span>&#125;)</span><br><span class="line"></span><br><span class="line">list( ChainMap(baseline,adjustments))</span><br><span class="line">&gt;&gt;&gt;[<span class="string">'art'</span>, <span class="string">'opera'</span>, <span class="string">'music'</span>]</span><br></pre></td></tr></table></figure>
+<p>ChainMap 的作用是将多个字典组合在一起，虽然创建一个新字典或者原字典update也可以实现这个功能，但比起通过ChainMap实现还是慢了很多。<br>可以通过key输出值，不过若被连接的两个字典有同样的key，仅输出前一个字典的value</p>
+<h5 id="Counter"><a href="#Counter" class="headerlink" title="Counter"></a>Counter</h5><figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">cnt = Counter()</span><br><span class="line"><span class="keyword">for</span> word <span class="keyword">in</span> [<span class="string">'red'</span>, <span class="string">'blue'</span>, <span class="string">'red'</span>, <span class="string">'green'</span>, <span class="string">'blue'</span>, <span class="string">'blue'</span>]:</span><br><span class="line">    cnt[word] += <span class="number">1</span></span><br><span class="line"></span><br><span class="line">print(cnt)</span><br><span class="line">&gt;&gt;&gt;Counter(&#123;<span class="string">'blue'</span>: <span class="number">3</span>, <span class="string">'red'</span>: <span class="number">2</span>, <span class="string">'green'</span>: <span class="number">1</span>&#125;)</span><br></pre></td></tr></table></figure>
+<p>Counter用于将输入列表的单词和单词频率以字典形式返回。Counter操作的对象必须是可哈希的，元组、字符串、number类都是可哈希的对象，而列表、字典是不可哈希的。</p>
+<p>之前做过一道单词统计题，show-me-the-code(python)第 0004 题：任一个英文的纯文本文件，统计其中的单词出现的个数。就可以使用Counter来做。</p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">with</span> open(filepath, <span class="string">'r'</span>, encoding=<span class="string">'utf-8'</span>) <span class="keyword">as</span> f:</span><br><span class="line">    s=f.read()</span><br><span class="line">pattern = <span class="string">"\w+"</span></span><br><span class="line">lst = re.findall(pattern, s)<span class="comment">#原文提取单词加入列表</span></span><br><span class="line">res = Counter(lst)<span class="comment">#输出单词: 频率 字典</span></span><br></pre></td></tr></table></figure>
+
+<h5 id="defaultdict"><a href="#defaultdict" class="headerlink" title="defaultdict"></a>defaultdict</h5><p>是一个可以指定默认值的字典类型，和传统dic相比就多了这个功能，其他的都一样。</p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">s = [(<span class="string">'yellow'</span>, <span class="number">1</span>), (<span class="string">'blue'</span>, <span class="number">2</span>), (<span class="string">'yellow'</span>, <span class="number">3</span>), (<span class="string">'blue'</span>, <span class="number">4</span>), (<span class="string">'red'</span>, <span class="number">1</span>)]</span><br><span class="line">d = defaultdict(list)<span class="comment">#默认值是list，首次遇到key时，字典中没有这个键值对，创建键值对，值为list</span></span><br><span class="line"><span class="keyword">for</span> k, v <span class="keyword">in</span> s:</span><br><span class="line">    d[k].append(v)<span class="comment">#可以在创建的list上append了</span></span><br><span class="line"></span><br><span class="line">print(d)</span><br><span class="line">&gt;&gt;&gt;[(<span class="string">'blue'</span>, [<span class="number">2</span>, <span class="number">4</span>]), (<span class="string">'red'</span>, [<span class="number">1</span>]), (<span class="string">'yellow'</span>, [<span class="number">1</span>, <span class="number">3</span>])]</span><br><span class="line"></span><br><span class="line">s=<span class="string">'dihcuahif'</span></span><br><span class="line">d=defaultdict(int)</span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> s:</span><br><span class="line">    d[i]+=<span class="number">1</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>sorted(d.items())</span><br><span class="line">[(<span class="string">'i'</span>, <span class="number">4</span>), (<span class="string">'m'</span>, <span class="number">1</span>), (<span class="string">'p'</span>, <span class="number">2</span>), (<span class="string">'s'</span>, <span class="number">4</span>)]</span><br></pre></td></tr></table></figure>
+<p>defaultdict通过重写<strong>missing</strong>实现这个功能，创建defaultdict对象时，括号中参数为default_factory，若<strong>missing</strong>函数找不到当前键值，将该键的值设为default_factory，随后返回。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://rotonnn.github.io/2019/11/14/Leetcode-md/" data-id="ck5kiu9wc0001tswfbzzo8tx1" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/LeetCode/" rel="tag">LeetCode</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2019/11/17/LeetCode1-md/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          全排列、dp、zip()用法
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2019/11/03/selenium-md/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">selenium学习笔记</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">分类</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/%E9%A2%98%E8%A7%A3/">题解</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">标签</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/C-C-%E6%89%A9%E5%B1%95/" rel="tag">C/C++扩展</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/LeetCode/" rel="tag">LeetCode</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Python/" rel="tag">Python</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%B0%8F%E8%80%8C%E6%97%A0%E7%94%A8%E4%BD%86%E5%BE%88%E5%BF%AB%E4%B9%90%E7%9A%84%E5%BA%94%E7%94%A8/" rel="tag">小而无用但很快乐的应用</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%B5%8B%E8%AF%95/" rel="tag">测试</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%9F%B3%E9%A2%91%E5%A4%84%E7%90%86/" rel="tag">音频处理</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">标签云</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/C-C-%E6%89%A9%E5%B1%95/" style="font-size: 10px;">C/C++扩展</a> <a href="/tags/LeetCode/" style="font-size: 20px;">LeetCode</a> <a href="/tags/Python/" style="font-size: 15px;">Python</a> <a href="/tags/%E5%B0%8F%E8%80%8C%E6%97%A0%E7%94%A8%E4%BD%86%E5%BE%88%E5%BF%AB%E4%B9%90%E7%9A%84%E5%BA%94%E7%94%A8/" style="font-size: 10px;">小而无用但很快乐的应用</a> <a href="/tags/%E6%B5%8B%E8%AF%95/" style="font-size: 10px;">测试</a> <a href="/tags/%E9%9F%B3%E9%A2%91%E5%A4%84%E7%90%86/" style="font-size: 10px;">音频处理</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">归档</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">一月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">十二月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">十一月 2019</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">最新文章</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2020/01/13/pyextend-md/">Python C++扩展</a>
+          </li>
+        
+          <li>
+            <a href="/2019/12/04/LeetCode2-md/">LeetCode2.md</a>
+          </li>
+        
+          <li>
+            <a href="/2019/12/04/LeetCode3-md/">LeetCode3.md</a>
+          </li>
+        
+          <li>
+            <a href="/2019/12/01/ddd-md/">分贝检测程序，超过75dB马上警报</a>
+          </li>
+        
+          <li>
+            <a href="/2019/11/17/LeetCode1-md/">全排列、dp、zip()用法</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2020 ROTON<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+
+
+  </div>
+</body>
+</html>

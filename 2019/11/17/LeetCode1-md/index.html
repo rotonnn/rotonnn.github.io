@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+
+  
+  <title>全排列、dp、zip()用法 | ROTON&#39;s BLOGGGG</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="通配符匹配">
+<meta name="keywords" content="LeetCode">
+<meta property="og:type" content="article">
+<meta property="og:title" content="全排列、dp、zip()用法">
+<meta property="og:url" content="http:&#x2F;&#x2F;rotonnn.github.io&#x2F;2019&#x2F;11&#x2F;17&#x2F;LeetCode1-md&#x2F;index.html">
+<meta property="og:site_name" content="ROTON&#39;s BLOGGGG">
+<meta property="og:description" content="通配符匹配">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="http:&#x2F;&#x2F;rotonnn.github.io&#x2F;images&#x2F;44.png">
+<meta property="og:image" content="http:&#x2F;&#x2F;rotonnn.github.io&#x2F;images&#x2F;%E6%9C%80%E5%A4%A7%E4%B8%89%E6%95%B4%E9%99%A4.png">
+<meta property="og:image" content="http:&#x2F;&#x2F;rotonnn.github.io&#x2F;images&#x2F;%E6%B1%A1%E6%9F%93%E4%BA%8C%E5%8F%89%E6%A0%91.PNG">
+<meta property="og:image" content="http:&#x2F;&#x2F;rotonnn.github.io&#x2F;images&#x2F;%E6%8E%A5%E9%9B%A8%E6%B0%B4.png">
+<meta property="og:image" content="http:&#x2F;&#x2F;rotonnn.github.io&#x2F;images&#x2F;%E8%9E%BA%E6%97%8B%E7%9F%A9%E9%98%B5.png">
+<meta property="og:updated_time" content="2020-01-19T04:16:33.493Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http:&#x2F;&#x2F;rotonnn.github.io&#x2F;images&#x2F;44.png">
+  
+    <link rel="alternate" href="/atom.xml" title="ROTON&#39;s BLOGGGG" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">ROTON&#39;s BLOGGGG</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="搜索"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://rotonnn.github.io"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-LeetCode1-md" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2019/11/17/LeetCode1-md/" class="article-date">
+  <time datetime="2019-11-17T14:28:46.000Z" itemprop="datePublished">2019-11-17</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/%E9%A2%98%E8%A7%A3/">题解</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      全排列、dp、zip()用法
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="通配符匹配"><a href="#通配符匹配" class="headerlink" title="通配符匹配"></a>通配符匹配</h3><a id="more"></a>
+<p><img src="/images/44.png" alt=""></p>
+<p>思路：</p>
+<ul>
+<li>创建一个 (len(p)+1)*(len(s)+1) 大小的数组lst，除了lst[0][0]外，其他的都为<code>False</code></li>
+<li>lst是显示状态的数组，lst[i][j]标识当前p[:i]能匹配s[:j]</li>
+<li>正式开始填充数组，首先数组初始化，用于填充第一行lst[0]。若当前p[i]==’<em>‘ 且 lst[0][i-1]==True 的情况，lst[0][i]=True。 这个是覆盖`</em>`替代多个s中字符串的情况；</li>
+<li>开始比对s与p：如果p当前字符不是* ，lst[i][j]=lst[i-1][j-1]</li>
+<li>否则的话，lst[i][j]=lst[i-1][j](<code>*</code>覆盖了多个s字符的情况) or lst[i][j-1](<code>*</code>等于空串的情况)</li>
+</ul>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">Solution</span><span class="params">(self, s: str, p: str)</span> -&gt; bool:</span></span><br><span class="line">    lenp,lens=len(p),len(s)</span><br><span class="line">   <span class="comment">#初始化dp数组，以pattern+1长度为列，str+1长度为行</span></span><br><span class="line">    lst=[[<span class="literal">False</span>] * lenp+<span class="number">1</span> <span class="keyword">for</span> _ <span class="keyword">in</span> range(lens+<span class="number">1</span>)]</span><br><span class="line">    <span class="comment">#0行0列是加入的空字符，lst[0][0]=True意为空字符串匹配结果为True</span></span><br><span class="line">    lst[<span class="number">0</span>][<span class="number">0</span>]=<span class="literal">True</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">#初始化lst[0]，如果p第一个字符为'*'的话，置为True，在后面的遍历中，这一列将全部为True</span></span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">1</span>,lenp+<span class="number">1</span>):</span><br><span class="line">        lst[<span class="number">0</span>][i]=lst[<span class="number">0</span>][i<span class="number">-1</span>] <span class="keyword">and</span> p[i<span class="number">-1</span>]==<span class="string">'*'</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">#从1开始遍历。根据p的不同有不同的结果：</span></span><br><span class="line">    <span class="comment">#p[j-1]等于字母，如果和s[i-1]匹配的话，当前p[:j]能和s[:i]匹配；</span></span><br><span class="line">    <span class="comment">#p[j-1]等于*，此时*可以替代一个空串，也可以替代多个字符。如果*为空串，检查lst[i][j-1]，即p[:j-1]和s[:i]是否匹配；如果*替代非空串，检查lst[i-1][j]，即延续s[:j]&amp;p[:i]的匹配结果</span></span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">1</span>,lens+<span class="number">1</span>):</span><br><span class="line">        <span class="keyword">for</span> j <span class="keyword">in</span> range(<span class="number">1</span>,lenp+<span class="number">1</span>):</span><br><span class="line">            <span class="keyword">if</span> p[j<span class="number">-1</span>]==<span class="string">'*'</span>:</span><br><span class="line">                lst[i][j]= lst[i<span class="number">-1</span>][j] <span class="keyword">or</span> lst[i][j<span class="number">-1</span>]</span><br><span class="line">            <span class="keyword">else</span>:</span><br><span class="line">                lst[i][j]=lst[i<span class="number">-1</span>][j<span class="number">-1</span>]<span class="keyword">and</span> (p[j<span class="number">-1</span>]==s[i<span class="number">-1</span>] <span class="keyword">or</span> p[j<span class="number">-1</span>]==<span class="string">'?'</span>)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> lst[<span class="number">-1</span>][<span class="number">-1</span>]</span><br></pre></td></tr></table></figure>
+<p>是一个比较典型的dp，有比较典型的同类题型。和同类题型需要注意的地方在*</p>
+<h3 id="可被3整除"><a href="#可被3整除" class="headerlink" title="可被3整除"></a>可被3整除</h3><p><img src="/images/%E6%9C%80%E5%A4%A7%E4%B8%89%E6%95%B4%E9%99%A4.png" alt="pic"></p>
+<p><strong>思路</strong></p>
+<ul>
+<li>一个数字，要么被3整除，要么余1或余2，只有这三种情况</li>
+<li>一开始的想法是：余1+余2 || 余2x3 || 余1x3 ，这三种组合能够变成一个被三整除的数，结果发现如果按这个思路求结果还需要用dp算最优解，不划算；</li>
+<li>看了别人的题解受到启发，整个nums相加后%3，若余1则减去数组中最小的余1数，余2减去最小的余2数，然后再返回</li>
+</ul>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">solution</span><span class="params">(nums)</span>:</span></span><br><span class="line">    res=sum(nums)</span><br><span class="line">    <span class="comment">#一个键值为余数、值为list的字典</span></span><br><span class="line">    dic=defualtdict(list)</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> nums:</span><br><span class="line">        dic[i%<span class="number">3</span>].append(<span class="number">3</span>)</span><br><span class="line"></span><br><span class="line">    <span class="comment">#查看nums的总和，看它的余数是多少。如果为2，减去min(余数为2的最小值,两个余数为1的值之和)，余数为1同理。</span></span><br><span class="line">    <span class="keyword">if</span> res%<span class="number">3</span>==<span class="number">1</span>:</span><br><span class="line">        dic[<span class="number">1</span>]=sorted(dic[<span class="number">1</span>])</span><br><span class="line">        <span class="keyword">return</span> res-dic[<span class="number">1</span>][<span class="number">0</span>]</span><br><span class="line">    <span class="keyword">elif</span> res%<span class="number">3</span>==<span class="number">2</span>:</span><br><span class="line">        dic[<span class="number">2</span>]=sorted(dic[<span class="number">2</span>])</span><br><span class="line">        <span class="keyword">return</span> res-dic[<span class="number">2</span>][<span class="number">0</span>]</span><br><span class="line">    <span class="keyword">return</span> res</span><br></pre></td></tr></table></figure>
+<h3 id="受污染的二叉树"><a href="#受污染的二叉树" class="headerlink" title="受污染的二叉树"></a>受污染的二叉树</h3><p><img src="/images/%E6%B1%A1%E6%9F%93%E4%BA%8C%E5%8F%89%E6%A0%91.PNG" alt="pic"></p>
+<p><strong>思路：</strong></p>
+<ul>
+<li>从根节点开始，为左右子节点赋值，迭代</li>
+<li>将当前节点值加入lst，lst为二叉树中出现的所有节点值</li>
+<li>当整个树遍历完之后，看看要找的值在不在lst中</li>
+</ul>
+<p><strong>代码：</strong></p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">FindElements</span>:</span></span><br><span class="line">    lst=[]</span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">fill</span><span class="params">(self,root,lst)</span>:</span></span><br><span class="line">    <span class="string">'''重新填写被污染二叉树的值，并且把每个节点的值加入lst'''</span></span><br><span class="line">        <span class="keyword">if</span> root.val==<span class="number">-1</span>:</span><br><span class="line">            root.val=<span class="number">0</span></span><br><span class="line">        lst.append(root.val)</span><br><span class="line">        <span class="keyword">if</span> root.left:</span><br><span class="line">            root.left.val=root.val*<span class="number">2</span>+<span class="number">1</span></span><br><span class="line">            self.fill(root.left,lst)</span><br><span class="line">        <span class="keyword">if</span> root.right:</span><br><span class="line">            root.right.val=root.val*<span class="number">2</span>+<span class="number">2</span></span><br><span class="line">            self.fill(root.right,lst)</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, root: TreeNode)</span>:</span></span><br><span class="line">        self.lst=[]<span class="comment">#必须有这一步！不然会非常混乱，不同测试用例的值会混在一起</span></span><br><span class="line">        self.fill(root,self.lst)</span><br><span class="line">        </span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">find</span><span class="params">(self, target: int)</span> -&gt; bool:</span></span><br><span class="line">    <span class="string">'''检查target是否在lst中'''</span></span><br><span class="line">       <span class="comment">#print(self.lst)</span></span><br><span class="line">        <span class="keyword">return</span> target <span class="keyword">in</span> self.lst</span><br></pre></td></tr></table></figure>
+<p>这题蛮简单的，主要的问题在于lst的传递。一定要记得这种私有变量要在<strong>init</strong>函数里初始化，不然出事。</p>
+<h3 id="接雨水"><a href="#接雨水" class="headerlink" title="接雨水"></a>接雨水</h3><p><img src="/images/%E6%8E%A5%E9%9B%A8%E6%B0%B4.png" alt="pic"><br><strong>思路：</strong></p>
+<ul>
+<li>下雨后能接到多少水，就是看有多少个坑。</li>
+<li>假如有一个[3,2,1,4]的高度图，一定是用[4]和[3]当边界，因为选其他任何两个的计算的结果都会被他们俩覆盖；</li>
+<li>所以从最高的柱子mid开始，以他为分界线向两边找最高的柱子，得到左边最高的柱子left和右边最高的柱子right</li>
+<li>计算 [left,mid]+[mid,right]=[left,right]的体积，得到当前最大值</li>
+<li>继续向left左边和right取最高的柱子，继续计算，直到得到总共水的体积。</li>
+</ul>
+<p><strong>代码</strong></p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">rsum</span><span class="params">(self,height,top,mid)</span>:</span></span><br><span class="line">    <span class="string">'''迭代计算右边的雨水容积'''</span></span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">not</span> height:<span class="keyword">return</span> <span class="number">0</span><span class="comment">#返回条件</span></span><br><span class="line">        rtop=max(height)</span><br><span class="line">        ind=height.index(rtop)</span><br><span class="line">    </span><br><span class="line">        sm=self.rsum(height[ind+<span class="number">1</span>:],rtop,ind)<span class="comment">#这里是传递从ind开始的height数组</span></span><br><span class="line">        <span class="keyword">return</span> min(rtop,top)*ind-sum(height[:ind])+sm<span class="comment">#计算本段的雨水容积</span></span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">lsum</span><span class="params">(self,height,top,mid)</span>:</span></span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">not</span> height:<span class="keyword">return</span> <span class="number">0</span></span><br><span class="line">        ltop=max(height)</span><br><span class="line">        ind =height.index(ltop)</span><br><span class="line">        sm=self.lsum(height[:ind],ltop,ind)</span><br><span class="line">        <span class="keyword">return</span> min(ltop,top)*(len(height)-ind<span class="number">-1</span>)-sum(height[ind+<span class="number">1</span>:mid])+sm</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">trap</span><span class="params">(self, height: List[int])</span> -&gt; int:</span></span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">not</span> height:<span class="keyword">return</span> <span class="number">0</span></span><br><span class="line">        num,top,lens=<span class="number">0</span>,max(height),len(height)</span><br><span class="line">        mid=height.index(top)</span><br><span class="line"></span><br><span class="line">        num+=self.lsum(height[:mid],top,mid)</span><br><span class="line"></span><br><span class="line">        num+=self.rsum(height[mid+<span class="number">1</span>:],top,mid)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> num</span><br></pre></td></tr></table></figure>
+<p>这题其实思路比较简单，难的地方一个在怎么找左右最高(切片数组传参)，另一个在怎么判断迭代的出口。</p>
+<h3 id="螺旋矩阵"><a href="#螺旋矩阵" class="headerlink" title="螺旋矩阵"></a>螺旋矩阵</h3><p><img src="/images/%E8%9E%BA%E6%97%8B%E7%9F%A9%E9%98%B5.png" alt=""><br><strong>思路</strong></p>
+<ul>
+<li>没什么好思路，直接用Python列表自带的函数和切片做的</li>
+</ul>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">spiralOrder</span><span class="params">(self, matrix: List[List[int]])</span> -&gt; list:</span></span><br><span class="line">        res=[]</span><br><span class="line">        <span class="keyword">while</span> matrix:</span><br><span class="line">            res+=matrix[<span class="number">0</span>]</span><br><span class="line">            matrix.pop(<span class="number">0</span>)</span><br><span class="line">            <span class="keyword">if</span> matrix:</span><br><span class="line">                <span class="keyword">for</span> i <span class="keyword">in</span> matrix:</span><br><span class="line">                    res+=[i[<span class="number">-1</span>]]</span><br><span class="line">                    i.pop()</span><br><span class="line">            <span class="keyword">while</span> [] <span class="keyword">in</span> matrix:</span><br><span class="line">                matrix.remove([])</span><br><span class="line">                    </span><br><span class="line">            <span class="keyword">if</span> matrix:</span><br><span class="line">                res+=matrix[<span class="number">-1</span>][::<span class="number">-1</span>]</span><br><span class="line">                matrix.pop()</span><br><span class="line">            <span class="keyword">if</span> matrix:</span><br><span class="line">                <span class="keyword">for</span> i <span class="keyword">in</span> matrix[::<span class="number">-1</span>]:</span><br><span class="line">                    res+=[i[<span class="number">0</span>]]</span><br><span class="line">                    i.pop(<span class="number">0</span>)</span><br><span class="line">            <span class="keyword">while</span> [] <span class="keyword">in</span> matrix:</span><br><span class="line">                matrix.remove([])<span class="comment">#每行的第一个和最后一个pop出来可能会产生空的列表，把它们除掉</span></span><br><span class="line">        <span class="keyword">return</span> res</span><br></pre></td></tr></table></figure>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://rotonnn.github.io/2019/11/17/LeetCode1-md/" data-id="ck5kiu9w60000tswf0qc43yms" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/LeetCode/" rel="tag">LeetCode</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2019/12/01/ddd-md/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          分贝检测程序，超过75dB马上警报
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2019/11/14/Leetcode-md/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">LeetCode： 链表K组翻转 | Collection函数</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">分类</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/%E9%A2%98%E8%A7%A3/">题解</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">标签</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/C-C-%E6%89%A9%E5%B1%95/" rel="tag">C/C++扩展</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/LeetCode/" rel="tag">LeetCode</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Python/" rel="tag">Python</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%B0%8F%E8%80%8C%E6%97%A0%E7%94%A8%E4%BD%86%E5%BE%88%E5%BF%AB%E4%B9%90%E7%9A%84%E5%BA%94%E7%94%A8/" rel="tag">小而无用但很快乐的应用</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%B5%8B%E8%AF%95/" rel="tag">测试</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%9F%B3%E9%A2%91%E5%A4%84%E7%90%86/" rel="tag">音频处理</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">标签云</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/C-C-%E6%89%A9%E5%B1%95/" style="font-size: 10px;">C/C++扩展</a> <a href="/tags/LeetCode/" style="font-size: 20px;">LeetCode</a> <a href="/tags/Python/" style="font-size: 15px;">Python</a> <a href="/tags/%E5%B0%8F%E8%80%8C%E6%97%A0%E7%94%A8%E4%BD%86%E5%BE%88%E5%BF%AB%E4%B9%90%E7%9A%84%E5%BA%94%E7%94%A8/" style="font-size: 10px;">小而无用但很快乐的应用</a> <a href="/tags/%E6%B5%8B%E8%AF%95/" style="font-size: 10px;">测试</a> <a href="/tags/%E9%9F%B3%E9%A2%91%E5%A4%84%E7%90%86/" style="font-size: 10px;">音频处理</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">归档</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">一月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">十二月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">十一月 2019</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">最新文章</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2020/01/13/pyextend-md/">Python C++扩展</a>
+          </li>
+        
+          <li>
+            <a href="/2019/12/04/LeetCode2-md/">LeetCode2.md</a>
+          </li>
+        
+          <li>
+            <a href="/2019/12/04/LeetCode3-md/">LeetCode3.md</a>
+          </li>
+        
+          <li>
+            <a href="/2019/12/01/ddd-md/">分贝检测程序，超过75dB马上警报</a>
+          </li>
+        
+          <li>
+            <a href="/2019/11/17/LeetCode1-md/">全排列、dp、zip()用法</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2020 ROTON<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+
+
+  </div>
+</body>
+</html>
