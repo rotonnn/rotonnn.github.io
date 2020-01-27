@@ -83,25 +83,16 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>爬虫的时候经常会用正则匹配标签中的内容，整理了re库一些常用的函数：<br>&lt;–! more –&gt;</p>
-<h5 id="用于匹配的函数"><a href="#用于匹配的函数" class="headerlink" title="用于匹配的函数"></a>用于匹配的函数</h5><p><code>match()</code> 和<code>search()</code> 函数是比较常用的两个函数，也很容易混淆。虽然他们感觉上很相似，但实际上匹配策略是不同的。</p>
-<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment"># match() 和 search() 的区别</span></span><br><span class="line"><span class="keyword">import</span> re</span><br><span class="line"></span><br><span class="line">s = <span class="string">"0731-8888888"</span></span><br><span class="line">pat=<span class="string">r"(\d-\d)"</span></span><br><span class="line">re.match(pat, s)</span><br><span class="line">&gt;&gt;&gt;<span class="literal">None</span></span><br><span class="line">re.search(pat, s)</span><br><span class="line">&gt;&gt;&gt;&lt;re.Match object; span=(<span class="number">3</span>, <span class="number">6</span>), match=<span class="string">'1-8'</span>&gt;</span><br></pre></td></tr></table></figure>
-<p><code>match</code>严格地从行起始匹配，不可以从字符串中间开始；<code>search</code>可以从字符串中间开始匹配，返回第一个匹配上的结果。检索完成之后，如果匹配成功返回上方例子所示的re.Match object 。</p>
-<h6 id="获取匹配字符串结果"><a href="#获取匹配字符串结果" class="headerlink" title="获取匹配字符串结果"></a>获取匹配字符串结果</h6><figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">pat1=<span class="string">r"(\d).*(\d-\d)"</span></span><br><span class="line"></span><br><span class="line">re.search(pat1,s).group(<span class="number">0</span>)</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="number">0</span></span><br><span class="line">re.search(pat1,s).groups()</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>(<span class="string">'0'</span>, <span class="string">'1-8'</span>)</span><br><span class="line">match=re.seatch(pat1,s)</span><br><span class="line">match[<span class="number">0</span>],match[<span class="number">1</span>],match[<span class="number">2</span>]</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="number">0731</span><span class="number">-8</span> <span class="number">0</span> <span class="number">1</span><span class="number">-8</span></span><br><span class="line">s[match.end(<span class="number">1</span>):match.start(<span class="number">2</span>)]</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="number">73</span></span><br></pre></td></tr></table></figure>
-<p>re.match obj 和迭代器操作有些相似，比如，可以通过索引获取匹配的结果，还有和迭代完全一样的<code>.start()</code>与<code>.end()</code>。但输出他本身是不能得到字符串的。将匹配字符串内容打印可以使用两种方法：索引和<code>.group()</code>函数</p>
-<p>group(n)函数的作用是返回匹配内容的第n组字符串。patter通过圆括号分组比如pat1中，(\d)为一组，(\d-\d)为一组。groups()以元组形式返回所有组的匹配字符串。不在括号内的值虽然参与匹配，但是通过group、groups获得不了，使用match[0]可以获得整个匹配的字符串，如上例match[0]返回“0731-8”，“73”是被不在括号中的。*匹配上的。</p>
-<p>end()和start()返回索引位置，可以通过切片去获取原字符串的内容。</p>
-<h5 id="和str相似内容"><a href="#和str相似内容" class="headerlink" title="和str相似内容"></a>和str相似内容</h5><p>re有一些和字符串相似的函数：</p>
-<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#split()</span></span><br><span class="line">text = <span class="string">"""Ross McFluff: 834.345.1254 155 Elm Street</span></span><br><span class="line"><span class="string">Ronald Heathmore: 892.345.3428 436 Finley Avenue</span></span><br><span class="line"><span class="string">Frank Burger: 925.541.7625 662 South Dogwood Way</span></span><br><span class="line"><span class="string">Heather Albrecht: 548.326.4584 919 Park Place"""</span></span><br><span class="line"></span><br><span class="line">entries = re.split(<span class="string">"\n+"</span>, text)</span><br><span class="line">lst = [re.split(<span class="string">r":? "</span>, entry, <span class="number">3</span>) <span class="keyword">for</span> entry <span class="keyword">in</span> entries]</span><br><span class="line">print(lst)</span><br><span class="line"></span><br><span class="line"><span class="comment">#replace() | sub()</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">dashrepl</span><span class="params">(matchobj)</span>:</span></span><br><span class="line">    <span class="keyword">if</span> matchobj.group(<span class="number">0</span>) == <span class="string">'-'</span>: <span class="keyword">return</span> <span class="string">' '</span></span><br><span class="line">    <span class="keyword">else</span>: <span class="keyword">return</span> <span class="string">'-'</span></span><br><span class="line">re.sub(<span class="string">'-&#123;1,2&#125;'</span>, dashrepl, <span class="string">'pro----gram-files'</span>)</span><br><span class="line">&gt;&gt;&gt;<span class="string">'pro--gram files'</span></span><br><span class="line">re.sub(<span class="string">r'\sAND\s'</span>, <span class="string">' &amp; '</span>, <span class="string">'Baked Beans And Spam'</span>, flags=re.IGNORECASE)</span><br><span class="line">&gt;&gt;&gt;<span class="string">'Baked Beans &amp; Spam'</span></span><br></pre></td></tr></table></figure>
-<p>split和字符串的用法一样，传入一个分隔符，返回一个被分隔符划分后的列表。不同之处在于，re的分隔符可以传入正则式，能够更加灵活地分割字符串。</p>
-<p>sub()则是 re 形式的 str.replace() 它同样是令字符替代变得更加灵活。replace不可以传入正则表达式，而sub()可以，sub还可以在替代字符字段中传入callback函数。它的count字段，可以控制字符串替代的次数，超出次数后，剩下的字符串将不予替换。</p>
-<p>sub()的第一个例子中，dashrepl传参matchobj。matchobj类型是re.Match obj，所以说sub()每成功匹配一次，便将这个对象传入dashrepl()处理，这里的.group(0)是当次re.Match obj 的group(0)。</p>
-<p>暂时就这么多啦！</p>
-
+        <p>爬虫的时候经常会用正则匹配标签中的内容，整理了re库一些常用的函数：</p>
+        
+          <p class="article-more-link">
+            <a href="/2020/01/27/%E6%9C%B4%E7%B4%A0%E6%AD%A3%E5%88%99/#more">Read More</a>
+          </p>
+        
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://rotonnn.github.io/2020/01/27/%E6%9C%B4%E7%B4%A0%E6%AD%A3%E5%88%99/" data-id="ck5w9kn5a000ai8wfci026wql" class="article-share-link">Share</a>
+      <a data-url="http://rotonnn.github.io/2020/01/27/%E6%9C%B4%E7%B4%A0%E6%AD%A3%E5%88%99/" data-id="ck5w9l8sc000v40wf2bd73muj" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/regex/" rel="tag">regex</a></li></ul>
@@ -144,7 +135,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://rotonnn.github.io/2020/01/13/pyextend-md/" data-id="ck5w9kn500005i8wfgkx5g076" class="article-share-link">Share</a>
+      <a data-url="http://rotonnn.github.io/2020/01/13/pyextend-md/" data-id="ck5w9l8rw000540wfbai90001" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/C-C-%E6%89%A9%E5%B1%95/" rel="tag">C/C++扩展</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Python/" rel="tag">Python</a></li></ul>
@@ -191,7 +182,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://rotonnn.github.io/2019/12/04/LeetCode2-md/" data-id="ck5w9kn5n000zi8wfdj5dfpew" class="article-share-link">Share</a>
+      <a data-url="http://rotonnn.github.io/2019/12/04/LeetCode2-md/" data-id="ck5w9l8sb000u40wfa16g94sl" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/LeetCode/" rel="tag">LeetCode</a></li></ul>
@@ -238,7 +229,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://rotonnn.github.io/2019/12/04/LeetCode3-md/" data-id="ck5w9kn4y0004i8wfcr4i7285" class="article-share-link">Share</a>
+      <a data-url="http://rotonnn.github.io/2019/12/04/LeetCode3-md/" data-id="ck5w9l8rq000140wff81w39xy" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/LeetCode/" rel="tag">LeetCode</a></li></ul>
@@ -281,7 +272,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://rotonnn.github.io/2019/12/01/ddd-md/" data-id="ck5w9kn520006i8wf9edmbbnr" class="article-share-link">Share</a>
+      <a data-url="http://rotonnn.github.io/2019/12/01/ddd-md/" data-id="ck5w9l8ru000440wfd4wufsps" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Python/" rel="tag">Python</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E5%B0%8F%E8%80%8C%E6%97%A0%E7%94%A8%E4%BD%86%E5%BE%88%E5%BF%AB%E4%B9%90%E7%9A%84%E5%BA%94%E7%94%A8/" rel="tag">小而无用但很快乐的应用</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E9%9F%B3%E9%A2%91%E5%A4%84%E7%90%86/" rel="tag">音频处理</a></li></ul>
@@ -328,7 +319,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://rotonnn.github.io/2019/11/17/LeetCode1-md/" data-id="ck5w9kn4d0000i8wfa8zp8nnv" class="article-share-link">Share</a>
+      <a data-url="http://rotonnn.github.io/2019/11/17/LeetCode1-md/" data-id="ck5w9l8rh000040wff9bv54tz" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/LeetCode/" rel="tag">LeetCode</a></li></ul>
@@ -375,7 +366,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://rotonnn.github.io/2019/11/14/Leetcode-md/" data-id="ck5w9kn4p0001i8wfa1364uwt" class="article-share-link">Share</a>
+      <a data-url="http://rotonnn.github.io/2019/11/14/Leetcode-md/" data-id="ck5w9l8s0000a40wf928905fe" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/LeetCode/" rel="tag">LeetCode</a></li></ul>
@@ -418,7 +409,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://rotonnn.github.io/2019/11/03/selenium-md/" data-id="ck5w9kn5c000bi8wf9zx1ej92" class="article-share-link">Share</a>
+      <a data-url="http://rotonnn.github.io/2019/11/03/selenium-md/" data-id="ck5w9l8rx000640wf1ml0gf1s" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Python/" rel="tag">Python</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E6%B5%8B%E8%AF%95/" rel="tag">测试</a></li></ul>
