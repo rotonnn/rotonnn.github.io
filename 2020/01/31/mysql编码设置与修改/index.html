@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+
+  
+  <title>mysql编码设置与修改 | ROTON&#39;s BLOGGGG</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="产生的问题使用Django时发现数据库数据在页面上显示乱码，英文和数字显示正常，但所有的中文字符显示为&amp;quot;?&amp;quot;">
+<meta name="keywords" content="mysql">
+<meta property="og:type" content="article">
+<meta property="og:title" content="mysql编码设置与修改">
+<meta property="og:url" content="http:&#x2F;&#x2F;rotonnn.github.io&#x2F;2020&#x2F;01&#x2F;31&#x2F;mysql%E7%BC%96%E7%A0%81%E8%AE%BE%E7%BD%AE%E4%B8%8E%E4%BF%AE%E6%94%B9&#x2F;index.html">
+<meta property="og:site_name" content="ROTON&#39;s BLOGGGG">
+<meta property="og:description" content="产生的问题使用Django时发现数据库数据在页面上显示乱码，英文和数字显示正常，但所有的中文字符显示为&amp;quot;?&amp;quot;">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2020-01-31T11:23:35.363Z">
+<meta name="twitter:card" content="summary">
+  
+    <link rel="alternate" href="/atom.xml" title="ROTON&#39;s BLOGGGG" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">ROTON&#39;s BLOGGGG</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="搜索"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://rotonnn.github.io"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-mysql编码设置与修改" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2020/01/31/mysql%E7%BC%96%E7%A0%81%E8%AE%BE%E7%BD%AE%E4%B8%8E%E4%BF%AE%E6%94%B9/" class="article-date">
+  <time datetime="2020-01-31T10:06:06.000Z" itemprop="datePublished">2020-01-31</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      mysql编码设置与修改
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="产生的问题"><a href="#产生的问题" class="headerlink" title="产生的问题"></a>产生的问题</h3><p>使用Django时发现数据库数据在页面上显示乱码，英文和数字显示正常，但所有的中文字符显示为<code>&quot;?&quot;</code></p>
+<a id="more"></a>
+<h3 id="排查过程"><a href="#排查过程" class="headerlink" title="排查过程"></a>排查过程</h3><p><strong>排查Django 和系统的问题</strong></p>
+<ol>
+<li><p>Django的字符编码是根据电脑系统自动调整的，所以首先我去检查了一下电脑的字符集。<br>a)  在 <em>设置 &gt; 时间和语言 &gt; 语言 &gt; 相关设置 &gt; 管理语言设置 &gt; 管理 &gt; 更改系统区域设置</em> 中查看系统编码；</p>
+</li>
+<li><p>我的系统是使用utf-8编码，所以判断应该是数据库的字符编码出现了问题。</p>
+</li>
+</ol>
+<p><strong>排查数据库的问题</strong></p>
+<ol>
+<li><code>show variables like &#39;char%&#39;;</code>查看 mysql 的默认编码设置</li>
+</ol>
+<blockquote>
+<p>   +————————–+————————————————+<br>| Variable_name            | Value                                         &gt; |<br>+————————–+————————————————+<br>| character_set_client     | utf8                                           |<br>| character_set_connection | utf8                                           |<br>| character_set_database   | latin1                                          |<br>| character_set_filesystem | binary                                         |<br>| character_set_results    | utf8                                           |<br>| character_set_server     | utf8                                           |<br>| character_set_system     | utf8                                           |<br>| character_sets_dir       | D:…|<br>+————————–+————————————————</p>
+</blockquote>
+<ol start="2">
+<li><p>发现mysql 字段<code>character_set_database = latin1</code> ，这说明创建数据库时默认其编码格式为Latin1，需要改；</p>
+</li>
+<li><p><code>SHOW CREATE DATABASE &lt;database_name&gt;</code>查看数据库的编码</p>
+<blockquote>
+<p>  ———-+—————————————————————–+<br>| Database | Create Database                                                 |</p>
+</blockquote>
+</li>
+</ol>
+<p>+———-+—————————————————————–+<br>| django   | CREATE DATABASE <code>django</code> /*!40100 DEFAULT CHARACTER SET latin1 */ |<br>+———-+—————————————————————–+<br>4. 发现数据库编码是latin1，需要改；<br>2. <code>SHOW CREATE TABLE &lt;table_name&gt;</code>查看表和字段的编码</p>
+<blockquote>
+<p>——————-+———————————–<br>| medicine_customer | CREATE TABLE <code>medicine_customer</code> (<br>  <code>uid</code> varchar(50) CHARACTER SET <strong>latin1</strong> NOT NULL,<br>  <code>passwd</code> varchar(50) CHARACTER SET <strong>latin1</strong> NOT NULL,<br>  <code>uname</code> varchar(200) CHARACTER SET <strong>latin1</strong> NOT NULL,<br>  <code>is_hos</code> tinyint(1) NOT NULL,<br>  PRIMARY KEY (<code>uid</code>)<br>) ENGINE=InnoDB DEFAULT CHARSET=<strong>latin1</strong> |<br>+——————-+————————————<br>6. 发现表和字段都是latin1，都需要改</p>
+</blockquote>
+<h3 id="修改方法"><a href="#修改方法" class="headerlink" title="修改方法"></a>修改方法</h3><p>有两种修改方法，如果需求是改变所有表和字段的编码方式，使用方法一；如果只想改变字段或表或数据库的编码方式，使用方法二。</p>
+<p><strong>方法一：改变所有内容的编码</strong></p>
+<ol>
+<li>将models.py中表的代码移出，随后通过<code>py manage.py makemigrations + py manage.py migrate</code>清空数据库；</li>
+<li>将刚刚移出的代码移回，再运行一次 makemigrations + migrate 重新建立所有的表。新建的表将全部是utf-8的编码。</li>
+</ol>
+<p><strong>方法二：只改变某个内容的属性</strong></p>
+<ol>
+<li><p>改变mysql默认建立数据库的编码格式<br> 1.1 打开数据库的.ini文件<br> 1.2 在[client]下加上<code>default-character-set=utf8</code><br> 1.3 [mysqld]下加上<code>default-character-set=utf8</code> <code>init_connect=&#39;SET NAMES utf8&#39;</code><br> 1.4 重新启动数据库，character_set_database就变成utf8了*</p>
+</li>
+<li><p>改变数据库的编码类型<br><code>ALTER DATABASE &lt;database_name&gt; CHARACTER SET utf8;</code><br>e.g   <code>ALTER DATABASE  django CHARACTER SET utf8;</code></p>
+</li>
+<li><p>改变表的编码类型<br><code>ALTER TABLE &lt;table_name&gt; CHARACTER SET utf8;</code><br>e.g  <code>ALTER TABLE medicine_customer CHARACTER SET utf8;</code></p>
+</li>
+<li><p>改变字段的编码类型<br><code>ALTER &lt;table_name&gt; CHANGE &lt;c_name&gt; &lt;cname&gt; &lt;c_name_type&gt; CHARACTER SET  utf8;</code><br>e.g  <code>ALTER medicine_customer  uname uname varchar(50) CHARACTER SET utf8 ;</code></p>
+</li>
+</ol>
+<p>— end —</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://rotonnn.github.io/2020/01/31/mysql%E7%BC%96%E7%A0%81%E8%AE%BE%E7%BD%AE%E4%B8%8E%E4%BF%AE%E6%94%B9/" data-id="ck622y0n20005hwwf48kqer7q" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/mysql/" rel="tag">mysql</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+  
+    <a href="/2020/01/27/%E6%9C%B4%E7%B4%A0%E6%AD%A3%E5%88%99/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">朴素正则</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">分类</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/%E9%A2%98%E8%A7%A3/">题解</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">标签</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/C-C-%E6%89%A9%E5%B1%95/" rel="tag">C/C++扩展</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/LeetCode/" rel="tag">LeetCode</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Python/" rel="tag">Python</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mysql/" rel="tag">mysql</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/regex/" rel="tag">regex</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%B0%8F%E8%80%8C%E6%97%A0%E7%94%A8%E4%BD%86%E5%BE%88%E5%BF%AB%E4%B9%90%E7%9A%84%E5%BA%94%E7%94%A8/" rel="tag">小而无用但很快乐的应用</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%B5%8B%E8%AF%95/" rel="tag">测试</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%9F%B3%E9%A2%91%E5%A4%84%E7%90%86/" rel="tag">音频处理</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">标签云</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/C-C-%E6%89%A9%E5%B1%95/" style="font-size: 10px;">C/C++扩展</a> <a href="/tags/LeetCode/" style="font-size: 20px;">LeetCode</a> <a href="/tags/Python/" style="font-size: 15px;">Python</a> <a href="/tags/mysql/" style="font-size: 10px;">mysql</a> <a href="/tags/regex/" style="font-size: 10px;">regex</a> <a href="/tags/%E5%B0%8F%E8%80%8C%E6%97%A0%E7%94%A8%E4%BD%86%E5%BE%88%E5%BF%AB%E4%B9%90%E7%9A%84%E5%BA%94%E7%94%A8/" style="font-size: 10px;">小而无用但很快乐的应用</a> <a href="/tags/%E6%B5%8B%E8%AF%95/" style="font-size: 10px;">测试</a> <a href="/tags/%E9%9F%B3%E9%A2%91%E5%A4%84%E7%90%86/" style="font-size: 10px;">音频处理</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">归档</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">一月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">十二月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">十一月 2019</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">最新文章</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2020/01/31/mysql%E7%BC%96%E7%A0%81%E8%AE%BE%E7%BD%AE%E4%B8%8E%E4%BF%AE%E6%94%B9/">mysql编码设置与修改</a>
+          </li>
+        
+          <li>
+            <a href="/2020/01/27/%E6%9C%B4%E7%B4%A0%E6%AD%A3%E5%88%99/">朴素正则</a>
+          </li>
+        
+          <li>
+            <a href="/2020/01/13/pyextend-md/">Python C++扩展</a>
+          </li>
+        
+          <li>
+            <a href="/2019/12/04/LeetCode2-md/">单词搜索 柱状图最大矩形 解码方法 加油站 分割回文串 单词接龙 最长连续序列</a>
+          </li>
+        
+          <li>
+            <a href="/2019/12/04/LeetCode3-md/">不同路径 合并区间 颜色分类 最小覆盖子串 子集</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2020 ROTON<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+
+
+  </div>
+</body>
+</html>
