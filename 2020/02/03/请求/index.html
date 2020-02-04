@@ -7,15 +7,15 @@
   
   <title>RESTful web Service：Django DELETE 请求 | ROTON&#39;s BLOGGGG</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="之前读了一些关于REST 风格的文章，觉得蛮好就打算在本次毕设中用用，Django 也支持不同请求方式接口，之前用get()、post()都用得好好的，结果本次就踩坑了，记录一下爬出来的过程。 需求前端点击按钮，将页面中选中的CheckBox 数据通过 HTTPdelete 传回后端。后端取出数据，删除数据库对应的条目后返回原页面。 实现12&amp;lt;!--前端按钮代码--&amp;gt;&amp;lt;butto">
+  <meta name="description" content="之前读了一些关于REST 风格的文章，觉得蛮好就打算在本次毕设中用用，Django 也支持不同请求方式接口，之前用get()、post()都用得好好的，结果本次就踩坑了，记录一下爬出来的过程。">
 <meta name="keywords" content="Django,REST">
 <meta property="og:type" content="article">
 <meta property="og:title" content="RESTful web Service：Django DELETE 请求">
 <meta property="og:url" content="http:&#x2F;&#x2F;rotonnn.github.io&#x2F;2020&#x2F;02&#x2F;03&#x2F;%E8%AF%B7%E6%B1%82&#x2F;index.html">
 <meta property="og:site_name" content="ROTON&#39;s BLOGGGG">
-<meta property="og:description" content="之前读了一些关于REST 风格的文章，觉得蛮好就打算在本次毕设中用用，Django 也支持不同请求方式接口，之前用get()、post()都用得好好的，结果本次就踩坑了，记录一下爬出来的过程。 需求前端点击按钮，将页面中选中的CheckBox 数据通过 HTTPdelete 传回后端。后端取出数据，删除数据库对应的条目后返回原页面。 实现12&amp;lt;!--前端按钮代码--&amp;gt;&amp;lt;butto">
+<meta property="og:description" content="之前读了一些关于REST 风格的文章，觉得蛮好就打算在本次毕设中用用，Django 也支持不同请求方式接口，之前用get()、post()都用得好好的，结果本次就踩坑了，记录一下爬出来的过程。">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2020-02-03T14:56:14.913Z">
+<meta property="og:updated_time" content="2020-02-04T01:59:59.638Z">
 <meta name="twitter:card" content="summary">
   
     <link rel="alternate" href="/atom.xml" title="ROTON&#39;s BLOGGGG" type="application/atom+xml">
@@ -86,6 +86,7 @@
     <div class="article-entry" itemprop="articleBody">
       
         <p>之前读了一些关于REST 风格的文章，觉得蛮好就打算在本次毕设中用用，Django 也支持不同请求方式接口，之前用get()、post()都用得好好的，结果本次就踩坑了，记录一下爬出来的过程。</p>
+<a id="more"></a>
 <h3 id="需求"><a href="#需求" class="headerlink" title="需求"></a>需求</h3><p>前端点击按钮，将页面中选中的CheckBox 数据通过 HTTPdelete 传回后端。后端取出数据，删除数据库对应的条目后返回原页面。</p>
 <h3 id="实现"><a href="#实现" class="headerlink" title="实现"></a>实现</h3><figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!--前端按钮代码--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">button</span>  <span class="attr">class</span>=<span class="string">'btn-large'</span> <span class="attr">style</span>=<span class="string">"background-color: rgb(236, 152, 118);"</span> <span class="attr">onclick</span>=<span class="string">"del_med()"</span>&gt;</span>删除<span class="tag">&lt;/<span class="name">button</span>&gt;</span></span><br></pre></td></tr></table></figure>
 
@@ -108,7 +109,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://rotonnn.github.io/2020/02/03/%E8%AF%B7%E6%B1%82/" data-id="ck66kutho000628wf407h1s14" class="article-share-link">Share</a>
+      <a data-url="http://rotonnn.github.io/2020/02/03/%E8%AF%B7%E6%B1%82/" data-id="ck678khvy000hugwfbwj70hnj" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Django/" rel="tag">Django</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/REST/" rel="tag">REST</a></li></ul>

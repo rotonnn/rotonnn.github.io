@@ -84,29 +84,15 @@
     <div class="article-entry" itemprop="articleBody">
       
         <p>之前读了一些关于REST 风格的文章，觉得蛮好就打算在本次毕设中用用，Django 也支持不同请求方式接口，之前用get()、post()都用得好好的，结果本次就踩坑了，记录一下爬出来的过程。</p>
-<h3 id="需求"><a href="#需求" class="headerlink" title="需求"></a>需求</h3><p>前端点击按钮，将页面中选中的CheckBox 数据通过 HTTPdelete 传回后端。后端取出数据，删除数据库对应的条目后返回原页面。</p>
-<h3 id="实现"><a href="#实现" class="headerlink" title="实现"></a>实现</h3><figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!--前端按钮代码--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">button</span>  <span class="attr">class</span>=<span class="string">'btn-large'</span> <span class="attr">style</span>=<span class="string">"background-color: rgb(236, 152, 118);"</span> <span class="attr">onclick</span>=<span class="string">"del_med()"</span>&gt;</span>删除<span class="tag">&lt;/<span class="name">button</span>&gt;</span></span><br></pre></td></tr></table></figure>
-
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//js代码</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">del_med</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">var</span> check_num = $(<span class="string">"input[name='del_med']:checked"</span>).length;</span><br><span class="line">    <span class="keyword">if</span> (check_num == <span class="number">0</span>) &#123;</span><br><span class="line">        alert(<span class="string">"请至少选择一项"</span>);</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">false</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (confirm(<span class="string">"确认删除所选项目？"</span>)) &#123;</span><br><span class="line">        <span class="keyword">var</span> check_list = <span class="keyword">new</span> <span class="built_in">Array</span>();</span><br><span class="line">        $(<span class="string">"input[name='del_med']:checked"</span>).each(<span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">            check_list.push($(<span class="keyword">this</span>).val());</span><br><span class="line">        &#125;);</span><br><span class="line">            </span><br><span class="line">    &#125;</span><br><span class="line">      $.ajax(&#123;</span><br><span class="line">        type:<span class="string">"DELETE"</span>,</span><br><span class="line">        url:<span class="string">'medicine'</span>,</span><br><span class="line">        data:&#123;<span class="string">"delitems"</span>:check_list.toString()&#125;,</span><br><span class="line">        datatype:<span class="string">"html"</span>,</span><br><span class="line">        headers:&#123;<span class="string">"X-CSRFtoken"</span>: $.cookie(<span class="string">'csrftoken'</span>)&#125;,</span><br><span class="line">        success:<span class="function"><span class="keyword">function</span>(<span class="params">data</span>)</span>&#123;</span><br><span class="line">             location.reload();<span class="comment">//页面刷新</span></span><br><span class="line">         &#125;,</span><br><span class="line">        error:<span class="function"><span class="keyword">function</span>(<span class="params">data</span>)</span>&#123;</span><br><span class="line">             alert(<span class="string">'删除失败!'</span>);</span><br><span class="line">         &#125;</span><br><span class="line">     &#125;);</span><br><span class="line">    </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p><strong>因为 html 布局不好看所以没有选择form提交CheckBox，而是用js实现的。我基本上不会前端的内容，代码能用，但是说的不一定对。</strong></p>
-<p><strong>js</strong></p>
-<ul>
-<li>在js中新建数组对象，将所有CheckBox选中的value字段值加入数组；</li>
-<li>ajax创建Request，把数组放进Request的data中，ajax会自动向后端发送</li>
-<li>踩坑点：Django 有一个防止csrf攻击的中间件，它会检查请求是否携带CSRFtoken，所以在请求头必须携带”X-CSRFtoken”，值可以通过$.cookie收到；</li>
-<li>踩坑点：如果要用$.cookie，得从jQuery下载<code>&#39;jquery.cookie.js&#39;</code>然后在html中引用，一定要先引用jQuery再引用它</li>
-</ul>
-<p><strong>后端</strong></p>
-<ul>
-<li>传回后端，HTTPdelete会被类视图的 <code>delete(self,request)</code> 捕捉。不过 DELETE 不像POST 请求一样会自己产生<code>request.POST</code> 这样好用的对象，所以需要先<code>from django.http import QueryDict</code> ，然后在<em>delete(self,request)</em> 中通过<code>DELETE=QueryDict(request.body)</code> 创建对象，再<code>DELETE.get(&#39;xxxdata&#39;)</code></li>
-<li>从数据库中删除对象，render(原来的网页)。不可以redirect(原来的网页)不然会不停循环循环循环，然后报错。</li>
-</ul>
-
+        
+          <p class="article-more-link">
+            <a href="/2020/02/03/%E8%AF%B7%E6%B1%82/#more">Read More</a>
+          </p>
+        
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://rotonnn.github.io/2020/02/03/%E8%AF%B7%E6%B1%82/" data-id="ck66kutho000628wf407h1s14" class="article-share-link">Share</a>
+      <a data-url="http://rotonnn.github.io/2020/02/03/%E8%AF%B7%E6%B1%82/" data-id="ck678khvy000hugwfbwj70hnj" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Django/" rel="tag">Django</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/REST/" rel="tag">REST</a></li></ul>
@@ -149,7 +135,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://rotonnn.github.io/2020/01/31/mysql%E7%BC%96%E7%A0%81%E8%AE%BE%E7%BD%AE%E4%B8%8E%E4%BF%AE%E6%94%B9/" data-id="ck66kuthn000528wf6cq2g17q" class="article-share-link">Share</a>
+      <a data-url="http://rotonnn.github.io/2020/01/31/mysql%E7%BC%96%E7%A0%81%E8%AE%BE%E7%BD%AE%E4%B8%8E%E4%BF%AE%E6%94%B9/" data-id="ck678khvv000augwfftxl4u0k" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/mysql/" rel="tag">mysql</a></li></ul>
@@ -192,7 +178,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://rotonnn.github.io/2020/01/27/%E6%9C%B4%E7%B4%A0%E6%AD%A3%E5%88%99/" data-id="ck66kuti4000w28wfh0bu70jl" class="article-share-link">Share</a>
+      <a data-url="http://rotonnn.github.io/2020/01/27/%E6%9C%B4%E7%B4%A0%E6%AD%A3%E5%88%99/" data-id="ck678khvw000cugwf3edeek6w" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/regex/" rel="tag">regex</a></li></ul>
@@ -235,7 +221,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://rotonnn.github.io/2020/01/13/pyextend-md/" data-id="ck66kuthp000828wfh2zngam1" class="article-share-link">Share</a>
+      <a data-url="http://rotonnn.github.io/2020/01/13/pyextend-md/" data-id="ck678khvm0001ugwf5ggta39v" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/C-C-%E6%89%A9%E5%B1%95/" rel="tag">C/C++扩展</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Python/" rel="tag">Python</a></li></ul>
@@ -282,7 +268,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://rotonnn.github.io/2019/12/04/LeetCode2-md/" data-id="ck66kuti2000t28wfdwuz7sro" class="article-share-link">Share</a>
+      <a data-url="http://rotonnn.github.io/2019/12/04/LeetCode2-md/" data-id="ck678khw60014ugwf7gvm8e99" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/LeetCode/" rel="tag">LeetCode</a></li></ul>
@@ -329,7 +315,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://rotonnn.github.io/2019/12/04/LeetCode3-md/" data-id="ck66kuthh000128wf2l8dh0a2" class="article-share-link">Share</a>
+      <a data-url="http://rotonnn.github.io/2019/12/04/LeetCode3-md/" data-id="ck678khvs0006ugwf2fxx11nj" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/LeetCode/" rel="tag">LeetCode</a></li></ul>
@@ -372,7 +358,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://rotonnn.github.io/2019/12/01/ddd-md/" data-id="ck66kuthb000028wf879d2s98" class="article-share-link">Share</a>
+      <a data-url="http://rotonnn.github.io/2019/12/01/ddd-md/" data-id="ck678khvr0005ugwf649p15r1" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Python/" rel="tag">Python</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E5%B0%8F%E8%80%8C%E6%97%A0%E7%94%A8%E4%BD%86%E5%BE%88%E5%BF%AB%E4%B9%90%E7%9A%84%E5%BA%94%E7%94%A8/" rel="tag">小而无用但很快乐的应用</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E9%9F%B3%E9%A2%91%E5%A4%84%E7%90%86/" rel="tag">音频处理</a></li></ul>
@@ -419,7 +405,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://rotonnn.github.io/2019/11/17/LeetCode1-md/" data-id="ck66kuthl000328wfhk1tbhhp" class="article-share-link">Share</a>
+      <a data-url="http://rotonnn.github.io/2019/11/17/LeetCode1-md/" data-id="ck678khvf0000ugwfgi7zbmrq" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/LeetCode/" rel="tag">LeetCode</a></li></ul>
@@ -466,7 +452,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://rotonnn.github.io/2019/11/14/Leetcode-md/" data-id="ck66kuti3000u28wfadt80e5h" class="article-share-link">Share</a>
+      <a data-url="http://rotonnn.github.io/2019/11/14/Leetcode-md/" data-id="ck678khvp0004ugwfgmubfrdr" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/LeetCode/" rel="tag">LeetCode</a></li></ul>
@@ -509,7 +495,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://rotonnn.github.io/2019/11/03/selenium-md/" data-id="ck66kuti5000y28wfd6toanyu" class="article-share-link">Share</a>
+      <a data-url="http://rotonnn.github.io/2019/11/03/selenium-md/" data-id="ck678khvx000fugwfacdhbmql" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Python/" rel="tag">Python</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E6%B5%8B%E8%AF%95/" rel="tag">测试</a></li></ul>
