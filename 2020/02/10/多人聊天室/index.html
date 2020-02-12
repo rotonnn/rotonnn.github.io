@@ -15,10 +15,11 @@
 <meta property="og:site_name" content="ROTON&#39;s BLOGGGG">
 <meta property="og:description" content="为了巩固网络编程知识点，写了一个不带界面的多人聊天程序">
 <meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="http:&#x2F;&#x2F;rotonnn.github.io&#x2F;2020&#x2F;02&#x2F;10&#x2F;images&#x2F;%E6%BC%94%E7%A4%BA.png">
 <meta property="og:image" content="http:&#x2F;&#x2F;rotonnn.github.io&#x2F;images&#x2F;chat%E7%BB%93%E6%9E%84.png">
-<meta property="og:updated_time" content="2020-02-10T15:10:31.953Z">
+<meta property="og:updated_time" content="2020-02-12T15:48:45.019Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="http:&#x2F;&#x2F;rotonnn.github.io&#x2F;images&#x2F;chat%E7%BB%93%E6%9E%84.png">
+<meta name="twitter:image" content="http:&#x2F;&#x2F;rotonnn.github.io&#x2F;2020&#x2F;02&#x2F;10&#x2F;images&#x2F;%E6%BC%94%E7%A4%BA.png">
   
     <link rel="alternate" href="/atom.xml" title="ROTON&#39;s BLOGGGG" type="application/atom+xml">
   
@@ -89,6 +90,9 @@
       
         <p>为了巩固网络编程知识点，写了一个不带界面的多人聊天程序</p>
 <a id="more"></a>
+<blockquote>
+<p><img src="../images/%E6%BC%94%E7%A4%BA.png" alt=""></p>
+</blockquote>
 <h4 id="结构"><a href="#结构" class="headerlink" title="结构"></a>结构</h4><p><img src="/images/chat%E7%BB%93%E6%9E%84.png" alt=""></p>
 <h4 id="Setting"><a href="#Setting" class="headerlink" title="Setting"></a>Setting</h4><p>setting.py 包含初始化套接字的参数和方法</p>
 <figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> socket</span><br><span class="line"><span class="keyword">import</span> random</span><br><span class="line">SOCK_SERV = <span class="string">'127.0.0.1'</span>, <span class="number">9999</span></span><br><span class="line">PIPE_SERV = <span class="string">'127.0.0.1'</span>, <span class="number">8888</span></span><br><span class="line"></span><br><span class="line">PORTS =[]</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">sock_serv</span><span class="params">(addr)</span>:</span></span><br><span class="line">    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)</span><br><span class="line">    s.bind(addr)</span><br><span class="line">    s.listen(<span class="number">3</span>)</span><br><span class="line">    <span class="keyword">return</span> s</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">sock_cli</span><span class="params">(addr)</span>:</span></span><br><span class="line">    print(addr)</span><br><span class="line">    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)</span><br><span class="line">    s.connect(addr)</span><br><span class="line">    <span class="keyword">return</span> s</span><br></pre></td></tr></table></figure>
