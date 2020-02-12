@@ -84,31 +84,11 @@
     <div class="article-entry" itemprop="articleBody">
       
         <p>记录了在Django 中设置定时任务的过程。</p>
-<h4 id="需求"><a href="#需求" class="headerlink" title="需求"></a>需求</h4><p>检查药品管理系统的数据库中有无过期药品。药品保质期和生产日期在两张不同表上，一个药品保质期对应多个生产日期，生产日期加保质期相加得到结果。</p>
-<h4 id="解决"><a href="#解决" class="headerlink" title="解决"></a>解决</h4><p>Django 框架有一个 <code>django-crontab</code> 库也可以定时任务，但由于它是通过运行Linux 自带的cron 命令实现的，所以在Windows 系统上不能使用，所以最终选择了<code>apscheduler</code>实现</p>
-<ul>
-<li>首先<code>pip install apschedule</code> 下载apscheduler模块，再<code>pip install django-apscheduler</code>，后者是保障定时任务在Django 项目中运行的库，包括注册、新建定时任务数据库等功能</li>
-<li>在<code>setting.py</code> 的INSTALLED_APP中加入<code>django-apschedule</code>;</li>
-<li>使用<code>manage.py</code>迁移数据库，会生成两个表<code>django_apscheduler_djangojob</code> 和 <code>django_apscheduler_djangojobexecution</code>用于存放定时器；</li>
-<li>在一个view 中写定时任务代码，这样只要运行程序，定时器就会被唤醒</li>
-<li>初始化一个 <code>apscheduler.schedulers.background.BackgroundScheduler()</code> 实例，这是后台的定时器；</li>
-<li>在要实现的任务函数上使用装饰器<code>@register_job</code> 进行设置，刚刚初始化的定时器作为第一个参数传入，除此之外可以传入：<ul>
-<li><code>cron</code> 选择cron风格，传入周、时、分、秒定时运行；</li>
-<li><code>interval</code> 选择interval，传入时、分、秒，每间隔这么久运行</li>
-</ul>
-</li>
-<li>要实现的功能放在任务函数中</li>
-<li>使用<code>register_event()</code>将定时器注册，监控任务；</li>
-<li>最后定时器<code>start()</code> 开始运行。</li>
-</ul>
-<p><strong>代码</strong></p>
-<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> apscheduler.schedulers.background <span class="keyword">import</span> BackgroundScheduler  </span><br><span class="line"><span class="keyword">from</span> django_apscheduler.jobstores <span class="keyword">import</span> DjangoJobStore, register_events, register_job</span><br><span class="line"></span><br><span class="line"><span class="keyword">try</span>:    </span><br><span class="line">    scheduler = BackgroundScheduler()</span><br><span class="line"></span><br><span class="line"><span class="meta">    @register_job(scheduler, 'cron', day_of_week='mon-sun', hour='0', minute='0', second='0',id='task_time')</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">my_job</span><span class="params">()</span>:</span></span><br><span class="line">        <span class="comment">#从药品数据库取出保质期</span></span><br><span class="line">        <span class="keyword">for</span> medicine <span class="keyword">in</span> CusMedicine.objects.all(): </span><br><span class="line">            exp = datetime.timedelta(days=<span class="number">30</span> * medicine.expiration)</span><br><span class="line">            <span class="comment">#从保质期数据库取出当前药品的生产日期</span></span><br><span class="line">            <span class="keyword">for</span> date <span class="keyword">in</span> medicine.expirmng_set.all().values()：</span><br><span class="line">                now = datetime.datetime.now()</span><br><span class="line">                <span class="comment">#这里注意，从mysql 中取出的日期类型是 datetime.date</span></span><br><span class="line">                <span class="comment">#但timedelta 是datetime.datetime </span></span><br><span class="line">                <span class="comment">#所以需要先将datetime.data 转成str ，再转成datetime.datetime</span></span><br><span class="line">                <span class="keyword">if</span> now &gt; datetime.datetime.strptime(str(date[<span class="string">'pro_date'</span>]), <span class="string">'%Y-%m-%d'</span>) + exp:</span><br><span class="line">                    expired.append(date)</span><br><span class="line">    <span class="comment">#注册定时器</span></span><br><span class="line">    register_events(scheduler)</span><br><span class="line">    <span class="comment">#开始定时运行</span></span><br><span class="line">    scheduler.start()</span><br></pre></td></tr></table></figure>
-
-<h4 id="两张表的结构"><a href="#两张表的结构" class="headerlink" title="两张表的结构"></a>两张表的结构</h4><p><em>django_apscheduler_djangojob</em><br>+———–+—————+——+—–+———+—————-+<br>| Field     | Type          | Null | Key | Default | Extra          |<br>+———–+—————+——+—–+———+—————-+<br>| id        | int(11)       | NO   | PRI | NULL    | auto_increment |<br>| status    | varchar(50)   | NO   |     | NULL    |                |<br>| run_time  | datetime(6)   | NO   | MUL | NULL    |                |<br>| duration  | decimal(15,2) | YES  |     | NULL    |                |<br>| started   | decimal(15,2) | YES  |     | NULL    |                |<br>| finished  | decimal(15,2) | YES  |     | NULL    |                |<br>| exception | varchar(1000) | YES  |     | NULL    |                |<br>| traceback | longtext      | YES  |     | NULL    |                |<br>| job_id    | int(11)       | NO   | MUL | NULL    |                |<br>+———–+—————+——+—–+———+—————-+</p>
-<blockquote>
-</blockquote>
-<p><em>django_apscheduler_djangojobexecution</em><br>+—————+————–+——+—–+———+—————-+<br>| Field         | Type         | Null | Key | Default | Extra          |<br>+—————+————–+——+—–+———+—————-+<br>| id            | int(11)      | NO   | PRI | NULL    | auto_increment |<br>| name          | varchar(255) | NO   | UNI | NULL    |                |<br>| next_run_time | datetime(6)  | YES  | MUL | NULL    |                |<br>| job_state     | longblob     | NO   |     | NULL    |                |<br>+—————+————–+——+—–+———+—————-+</p>
-
+        
+          <p class="article-more-link">
+            <a href="/2020/02/12/Django%E5%AE%9A%E6%97%B6/#more">Read More</a>
+          </p>
+        
       
     </div>
     <footer class="article-footer">
