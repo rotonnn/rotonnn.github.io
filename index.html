@@ -84,6 +84,7 @@
     <div class="article-entry" itemprop="articleBody">
       
         <a id="more"></a>
+
 <p>Cookies 和 Session 都是用于实现HTTP 持久化的工具。他们的不同处在于 Cookie 是放在客户端（浏览器）上的文本；Session 是储存在服务器上的资源。</p>
 <p>在大部分情况下，他们的作用一样 —— Cookie（Session）是一串键值对，通过在服务器中检索键值对中的值，来获取用户登录状态、确定用户权限或返回用户请求的资源。由于HTTP 协议是无状态的，如果没有cookie(session) ，同一个用户的两次请求，服务器会认为来自不同用户，有些状态就没法保持（比如：用户在A页面将商品加入购物车后点进购物车页面）。<br>在大多数情况下，他们可以单独使用：</p>
 <ul>
