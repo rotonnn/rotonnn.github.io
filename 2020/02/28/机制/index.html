@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+
+  
+  <title>pytest源码分析-assert机制 | ROTON&#39;s BLOGGGG</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="Assert 可以说得上是 Pytest 的灵魂。比起其他测试框架，Pytest 的断言机制非常简洁，它屏蔽了表达式的类型、断言的类型，只需使用 assert 关键字( 而不是 AssertionTrue 之类函数) 即可完成测试用例的检查。">
+<meta name="keywords" content="Python,测试,Pytest">
+<meta property="og:type" content="article">
+<meta property="og:title" content="pytest源码分析-assert机制">
+<meta property="og:url" content="http:&#x2F;&#x2F;rotonnn.github.io&#x2F;2020&#x2F;02&#x2F;28&#x2F;%E6%9C%BA%E5%88%B6&#x2F;index.html">
+<meta property="og:site_name" content="ROTON&#39;s BLOGGGG">
+<meta property="og:description" content="Assert 可以说得上是 Pytest 的灵魂。比起其他测试框架，Pytest 的断言机制非常简洁，它屏蔽了表达式的类型、断言的类型，只需使用 assert 关键字( 而不是 AssertionTrue 之类函数) 即可完成测试用例的检查。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2020-02-28T12:38:44.617Z">
+<meta name="twitter:card" content="summary">
+  
+    <link rel="alternate" href="/atom.xml" title="ROTON&#39;s BLOGGGG" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">ROTON&#39;s BLOGGGG</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="搜索"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://rotonnn.github.io"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-机制" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2020/02/28/%E6%9C%BA%E5%88%B6/" class="article-date">
+  <time datetime="2020-02-28T12:22:37.000Z" itemprop="datePublished">2020-02-28</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      pytest源码分析-assert机制
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>Assert 可以说得上是 Pytest 的灵魂。比起其他测试框架，Pytest 的断言机制非常简洁，它屏蔽了表达式的类型、断言的类型，只需使用 <code>assert</code> 关键字( 而不是 AssertionTrue 之类函数) 即可完成测试用例的检查。</p>
+<a id="more"></a>
+<h3 id="本文内容"><a href="#本文内容" class="headerlink" title="本文内容"></a>本文内容</h3><p>Assert 相关代码在 <code>_pytest/assertion/</code> 文件中，其中 <code>util.py</code> 是断言的作用代码。本文分析的是这里面的代码。</p>
+<p>在 Pytest 中，断言的格式一般是这样：<code>assert exp1 op exp2</code>，<code>util.py</code> 中的代码分为三类：</p>
+<ul>
+<li>format代码：规范 exp1 和 exp2 格式;</li>
+<li>类型判断代码：判断 exp1 和 exp2 类型是否一致；</li>
+<li>内容比较：比较 exp1 和 exp2 区别，返回结果。</li>
+</ul>
+<p>由于 format 代码几乎都是 pprint 的封装，所以姑且先不分析了。</p>
+<h3 id="util-py入口"><a href="#util-py入口" class="headerlink" title="util.py入口"></a>util.py入口</h3><p>断言被传入 <code>util.py</code> 后，首先进入 <code>assertrepr_compare(...)</code> ，这个函数是util 的骨架，它上一节中所有类型代码检查表达式。</p>
+<p>进入<code>assert_compare</code> 后，首先，函数检查命令行参数携带几个 <code>v</code> 。命令行调用 pytest 的格式是 <code>pytest [-v] [filepath]</code>  ，可以输入多个 <code>v</code>，v越多输出越详细。</p>
+<p>在这里，如果 <code>v</code> 数量多于两个，函数将用 pprint.pformat 规范表达式的格式，比如把 list 变为每个元素换一行的格式，美化后面内容比较的输出。</p>
+<p>断言中 op 可能是 <code>==</code> 或 <code>not in</code> ，根据op进入不同分支后，执行类型判断函数判。</p>
+<h3 id="类型判断函数"><a href="#类型判断函数" class="headerlink" title="类型判断函数"></a>类型判断函数</h3><p>类型判断函数用于判断op两边的表达式是否为同一数据类型。有如下类型判断函数</p>
+<ul>
+<li>issequence</li>
+<li>isset</li>
+<li>istext</li>
+<li>isdict</li>
+<li>isattrs  </li>
+<li>isdatacls</li>
+<li>isiterable</li>
+</ul>
+<p>其中 <code>sequence</code> <code>set</code> <code>dict</code> <code>text</code> 类型直接通过 <code>isinstance()</code> 函数判断并返回布尔类型；<br><code>isdatacls</code> 返回是否有 <code>__dataclass _fileds__</code> 字段；<code>isattrs</code> 返回是否有 <code>__attrs_attrs__</code> 字段。这两个的结果会被元组包含，传入后文所提的 <code>_compare_eq_cls()</code> 函数中<br><code>isiterable</code> 用传入对象生成迭代器，返回是否能生成迭代器。</p>
+<h3 id="内容比较"><a href="#内容比较" class="headerlink" title="内容比较"></a>内容比较</h3><p>内容比较函数在确定两边表达式类型相同后，比较两边表达式内的具体数据内容。<br>op 为断言的 operation</p>
+<h4 id="先看-op-为-时的比较："><a href="#先看-op-为-时的比较：" class="headerlink" title="先看 op 为 == 时的比较："></a>先看 op 为 <code>==</code> 时的比较：</h4><p><em><code>diff_text()</code> 是字符串的比较，它通过外部库 difflib 库实现功能。</em><br>他有不同详细程度的输出：</p>
+<ul>
+<li>当参数v数量小于 2 ：从头到尾从尾到头比较两个字符串，如果相同字符的数量大于 42，就把相同字符的部分截掉，只留下不同的部分；</li>
+<li>当参数 v 数量大于等于 2 ：保留所有的字符串内容。</li>
+<li>把两个字符串按 <code>\n</code> <code>\r\n</code> 分割成两个列表，将两个列表传入 <code>difflib.ndiff()</code> 函数</li>
+<li>ndiff() 函数将返回两个列表不同的地方。</li>
+</ul>
+<p><em><code>_compare_eq_set()</code> 是集合比较，它通过集合特性实现功能。</em></p>
+<ul>
+<li>左边的集合 - 右边的集合；右边的集合-左边的集合；</li>
+<li>得到的就是两边不一样的内容</li>
+</ul>
+<p><em><code>_compare_eq_dict()</code> 是字典比较。</em></p>
+<ul>
+<li>集合形式返回两个字典的键，得出共有的键；</li>
+<li>如果参数 v 数量小于 2 ，不处理字典键，否则按 <code>\n</code> <code>\r\n</code> 分割字典键；</li>
+<li>比较相同键的值，值不同则放入<code>diff</code> 列表；</li>
+<li>像处理集合一样处理字典键；</li>
+<li>最后返回不同的值和不同的键；</li>
+</ul>
+<p><strong>上面的数据的共通点是，他们都是可迭代的。Pytest 专门对迭代器还有特定的比较函数，当命令行参数大于等于两个 v 时，上面的数据结构就会进入迭代器比较。</strong></p>
+<p><em><code>_compare_eq_iterable()</code> 是比较可迭代数据的函数。</em></p>
+<ul>
+<li>传入左右表达式之后，用<code>\n</code> <code>\r\n</code> 分割成列表</li>
+<li>如果得到的列表长度不一样，将其传入 <code>AlwaysDispatchingPrettyPrinter</code> 类，这个类会把列表变成一个保留 <code>,</code> <code>[</code> <code>]</code> 并转义 <code>\n</code> 等转义符的字符串；</li>
+<li>然后将这个字符串传入外部库 <code>difflib</code> 的 <code>ndiff</code> 函数得到结果。</li>
+</ul>
+<p><em><code>_compare_eq_cls()</code> 是类比较。</em></p>
+<ul>
+<li>传入两个类，如果这两个类被 <code>@dataclass</code> 或 <code>@attrs</code> 装饰，将类中属性用<code>__dataclass_fields__</code> 或 <code>__attrs_attrs__</code> 把第一个类的类属性拿出来，放进field_to_check 列表；</li>
+<li>遍历 field_to_check ，从两个类中取出类属性，如果类属性值相等，放进 same 列表，否则放进 diff 列表</li>
+<li>输出具体哪些属性不同，如果命令行 v 数量大于等于 2，还要输出有哪些属性时相同的。</li>
+</ul>
+<h4 id="然后再看看-op-为-not-in-的情况"><a href="#然后再看看-op-为-not-in-的情况" class="headerlink" title="然后再看看 op 为 not in 的情况"></a>然后再看看 op 为 <code>not in</code> 的情况</h4><p><strong>not in 只有一个情况，就是检查左边的字符串是否在右边字符串中。其实 Pytest 也可以检查列表A 是否在列表B 中，字典A是否在字典B 中…等情况，但代码不在这个<code>util.py</code>中。</strong></p>
+<p><em><code>_notin_text</code> 用于检查左边的字符串是否在右边的字符串中。</em></p>
+<ul>
+<li>首先直接使用字符串自带函数 <code>find(strA)</code> 找到字符串A在字符串B中的位置，然后令 correct 等于字符串B 除去字符串A剩下的字符串</li>
+<li>将 correct 放进上文的 <code>_diff_text</code> 得到字符串不同的地方</li>
+<li>假设 strA/strB 如下， 则 diff 为：  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">strA = &apos;2&apos; </span><br><span class="line">strB = &apos;2345&apos;</span><br><span class="line">diff=[&apos;- 345&apos;, &apos;+ 2345&apos;, &apos;? +&apos;]</span><br></pre></td></tr></table></figure></li>
+<li>经过函数中的格式处理，输出变成：  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">E           2345</span><br><span class="line">E         ? +</span><br></pre></td></tr></table></figure>
+  <code>+</code> 标识了strA 的出现位置</li>
+</ul>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://rotonnn.github.io/2020/02/28/%E6%9C%BA%E5%88%B6/" data-id="ck765xz6u000djwwf649rar32" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Pytest/" rel="tag">Pytest</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Python/" rel="tag">Python</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E6%B5%8B%E8%AF%95/" rel="tag">测试</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+  
+    <a href="/2020/02/23/Django-Cookies-Session/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">Django: Cookies &amp; Session</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">分类</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/%E9%A2%98%E8%A7%A3/">题解</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">标签</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/C-C-%E6%89%A9%E5%B1%95/" rel="tag">C/C++扩展</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Django/" rel="tag">Django</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/LeetCode/" rel="tag">LeetCode</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Pytest/" rel="tag">Pytest</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Python/" rel="tag">Python</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/REST/" rel="tag">REST</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/cookie/" rel="tag">cookie</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mysql/" rel="tag">mysql</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/regex/" rel="tag">regex</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%B0%8F%E8%80%8C%E6%97%A0%E7%94%A8%E4%BD%86%E5%BE%88%E5%BF%AB%E4%B9%90%E7%9A%84%E5%BA%94%E7%94%A8/" rel="tag">小而无用但很快乐的应用</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%B5%8B%E8%AF%95/" rel="tag">测试</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/" rel="tag">网络编程</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%9F%B3%E9%A2%91%E5%A4%84%E7%90%86/" rel="tag">音频处理</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">标签云</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/C-C-%E6%89%A9%E5%B1%95/" style="font-size: 10px;">C/C++扩展</a> <a href="/tags/Django/" style="font-size: 15px;">Django</a> <a href="/tags/LeetCode/" style="font-size: 20px;">LeetCode</a> <a href="/tags/Pytest/" style="font-size: 10px;">Pytest</a> <a href="/tags/Python/" style="font-size: 20px;">Python</a> <a href="/tags/REST/" style="font-size: 10px;">REST</a> <a href="/tags/cookie/" style="font-size: 10px;">cookie</a> <a href="/tags/mysql/" style="font-size: 10px;">mysql</a> <a href="/tags/regex/" style="font-size: 10px;">regex</a> <a href="/tags/%E5%B0%8F%E8%80%8C%E6%97%A0%E7%94%A8%E4%BD%86%E5%BE%88%E5%BF%AB%E4%B9%90%E7%9A%84%E5%BA%94%E7%94%A8/" style="font-size: 10px;">小而无用但很快乐的应用</a> <a href="/tags/%E6%B5%8B%E8%AF%95/" style="font-size: 15px;">测试</a> <a href="/tags/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/" style="font-size: 10px;">网络编程</a> <a href="/tags/%E9%9F%B3%E9%A2%91%E5%A4%84%E7%90%86/" style="font-size: 10px;">音频处理</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">归档</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">二月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">一月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">十二月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">十一月 2019</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">最新文章</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2020/02/28/%E6%9C%BA%E5%88%B6/">pytest源码分析-assert机制</a>
+          </li>
+        
+          <li>
+            <a href="/2020/02/23/Django-Cookies-Session/">Django: Cookies &amp; Session</a>
+          </li>
+        
+          <li>
+            <a href="/2020/02/19/%E8%A3%85%E9%A5%B0%E5%99%A8%E5%88%9D%E6%8E%A2/">装饰器初探</a>
+          </li>
+        
+          <li>
+            <a href="/2020/02/12/Django%E5%AE%9A%E6%97%B6/">Django 使用定时任务检查保质期</a>
+          </li>
+        
+          <li>
+            <a href="/2020/02/10/%E5%A4%9A%E4%BA%BA%E8%81%8A%E5%A4%A9%E5%AE%A4/">Socket：多人聊天室</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2020 ROTON<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+
+
+  </div>
+</body>
+</html>
